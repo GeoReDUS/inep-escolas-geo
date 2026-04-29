@@ -1,0 +1,5 @@
+/.quarto/
+**/*.quarto_ipynb
+
+/dados/02_originais
+/dados/03_processados

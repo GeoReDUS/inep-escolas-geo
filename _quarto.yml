@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  navbar:
+    background: "#E7EAF6"
+    right:
+      - icon: github
+        href: https://github.com/GeoRedus/inep-esc-geo
+        aria-label: GitHub
+
+      - icon: globe-americas
+        href: https://www.redus.org.br/georedus
+        aria-label: GeoReDUS
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+    embed-resources: true
+
+# editor: visual

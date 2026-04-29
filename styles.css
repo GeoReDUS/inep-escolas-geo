@@ -1,0 +1,13 @@
+a {
+  text-decoration: none; 
+  color: #1f78b4;      
+}
+
+a:hover {
+  text-decoration: none;   
+  color: #0b4f8a;        
+}
+
+.navbar-light .navbar-nav .nav-link img {
+  opacity: 0.55;
+}
