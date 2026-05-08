@@ -1,5 +1,6 @@
 /.quarto/
 **/*.quarto_ipynb
 
+/dados/01_logs
 /dados/02_originais
 /dados/03_processados
