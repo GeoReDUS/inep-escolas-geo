@@ -1,0 +1,54 @@
+[2026-05-09 21:11:26] [INFO] Ano 2025: Início do processamento
+[2026-05-09 21:11:26] [INFO] Ano 2025: Tentativa de download/importação 1/3
+[2026-05-09 21:11:26] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:11:26] [NOVA TENTATIVA] Ano 2025: Aguardando 2s antes da próxima tentativa
+[2026-05-09 21:11:28] [INFO] Ano 2025: Tentativa de download/importação 2/3
+[2026-05-09 21:11:28] [ERRO] Ano 2025: Erro: zip error: Cannot open zip file `C:\Users\jacov\OneDrive\Documentos\projetos\2025_CEM\georedus_r\inep-escolas-geo\dados\02_originais\microdados_censo_escolar_2025.zip` for reading in file zip.c:144
+[2026-05-09 21:11:28] [NOVA TENTATIVA] Ano 2025: Aguardando 4s antes da próxima tentativa
+[2026-05-09 21:11:32] [INFO] Ano 2025: Tentativa de download/importação 3/3
+[2026-05-09 21:11:32] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:11:32] [FALHA] Ano 2025: Falha após todas as tentativas
+[2026-05-09 21:12:12] [INFO] Ano 2025: Início do processamento
+[2026-05-09 21:12:12] [INFO] Ano 2025: Tentativa de download/importação 1/3
+[2026-05-09 21:12:12] [ERRO] Ano 2025: Erro: zip error: Cannot open zip file `C:\Users\jacov\OneDrive\Documentos\projetos\2025_CEM\georedus_r\inep-escolas-geo\dados\02_originais\microdados_censo_escolar_2025.zip` for reading in file zip.c:144
+[2026-05-09 21:12:12] [NOVA TENTATIVA] Ano 2025: Aguardando 2s antes da próxima tentativa
+[2026-05-09 21:12:14] [INFO] Ano 2025: Tentativa de download/importação 2/3
+[2026-05-09 21:12:14] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:12:14] [NOVA TENTATIVA] Ano 2025: Aguardando 4s antes da próxima tentativa
+[2026-05-09 21:12:18] [INFO] Ano 2025: Tentativa de download/importação 3/3
+[2026-05-09 21:12:18] [ERRO] Ano 2025: Erro: zip error: Cannot open zip file `C:\Users\jacov\OneDrive\Documentos\projetos\2025_CEM\georedus_r\inep-escolas-geo\dados\02_originais\microdados_censo_escolar_2025.zip` for reading in file zip.c:144
+[2026-05-09 21:12:18] [FALHA] Ano 2025: Falha após todas as tentativas
+[2026-05-09 21:16:39] [INFO] Ano 2025: Início do processamento
+[2026-05-09 21:16:49] [INFO] Ano 2025: Tentativa de download/importação 1/3
+[2026-05-09 21:16:49] [ERRO] Ano 2025: Erro: object 'base_url' not found
+[2026-05-09 21:16:49] [NOVA TENTATIVA] Ano 2025: Aguardando 2s antes da próxima tentativa
+[2026-05-09 21:16:51] [INFO] Ano 2025: Tentativa de download/importação 2/3
+[2026-05-09 21:16:51] [ERRO] Ano 2025: Erro: object 'base_url' not found
+[2026-05-09 21:16:51] [NOVA TENTATIVA] Ano 2025: Aguardando 4s antes da próxima tentativa
+[2026-05-09 21:16:55] [INFO] Ano 2025: Tentativa de download/importação 3/3
+[2026-05-09 21:16:55] [ERRO] Ano 2025: Erro: object 'base_url' not found
+[2026-05-09 21:17:22] [INFO] Ano 2025: Tentativa de download/importação 1/3
+[2026-05-09 21:17:22] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:17:22] [NOVA TENTATIVA] Ano 2025: Aguardando 2s antes da próxima tentativa
+[2026-05-09 21:17:24] [INFO] Ano 2025: Tentativa de download/importação 2/3
+[2026-05-09 21:17:24] [ERRO] Ano 2025: Erro: zip error: Cannot open zip file `C:\Users\jacov\OneDrive\Documentos\projetos\2025_CEM\georedus_r\inep-escolas-geo\dados\02_originais\microdados_censo_escolar_2025.zip` for reading in file zip.c:144
+[2026-05-09 21:17:24] [NOVA TENTATIVA] Ano 2025: Aguardando 4s antes da próxima tentativa
+[2026-05-09 21:17:28] [INFO] Ano 2025: Tentativa de download/importação 3/3
+[2026-05-09 21:17:28] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:20:59] [INFO] Ano 2025: Dados brutos carregados: 214192 linhas, 942 colunas
+[2026-05-09 21:21:05] [INFO] Ano 2025: Base final gerada: 178766 escolas ativas, 12 variáveis
+[2026-05-09 21:21:20] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:23:52] [INFO] Ano 2025: Início do processamento
+[2026-05-09 21:23:52] [INFO] Ano 2025: Tentativa de download/importação 1/3
+[2026-05-09 21:23:52] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:23:52] [NOVA TENTATIVA] Ano 2025: Aguardando 2s antes da próxima tentativa
+[2026-05-09 21:23:54] [INFO] Ano 2025: Tentativa de download/importação 2/3
+[2026-05-09 21:23:54] [ERRO] Ano 2025: Erro: zip error: Cannot open zip file `C:\Users\jacov\OneDrive\Documentos\projetos\2025_CEM\georedus_r\inep-escolas-geo\dados\02_originais\microdados_censo_escolar_2025.zip` for reading in file zip.c:144
+[2026-05-09 21:23:54] [NOVA TENTATIVA] Ano 2025: Aguardando 4s antes da próxima tentativa
+[2026-05-09 21:23:59] [INFO] Ano 2025: Tentativa de download/importação 3/3
+[2026-05-09 21:23:59] [ERRO] Ano 2025: Erro: Failed to perform HTTP request.
+[2026-05-09 21:23:59] [FALHA] Ano 2025: Falha após todas as tentativas
+[2026-05-09 21:26:07] [INFO] Ano 2025: Início do processamento
+[2026-05-09 21:26:07] [INFO] Ano 2025: Tentativa de download/importação 1/3
+[2026-05-09 21:26:55] [INFO] Ano 2025: Dados brutos carregados: 214192 linhas, 942 colunas
+[2026-05-09 21:26:55] [INFO] Ano 2025: Base final gerada: 178766 escolas ativas, 12 variáveis
