@@ -479,7 +479,7 @@ base_unica_map_cnt_ano_orig |>
     ggplot(aes(x = fct_infreq(ano_cn_escolar), y = tot_escolas)) +
       geom_col(fill = "#4C6CB3") +
       geom_text(aes(y = label_pos, label = label_val_abs_rel), 
-                  size = 5, 
+                  size = 4, 
                   fontface = "bold") +
       labs(
         title = "Mapeamento das escolas nos censos escolares",
@@ -496,7 +496,7 @@ base_unica_map_cnt_ano_orig |>
         axis.ticks.x = element_blank(),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
-        axis.text.y = element_text(size = 13.5)
+        axis.text.y = element_text(size = 12.5)
         )
 
 
@@ -509,7 +509,7 @@ base_unica_map_cnt_anos|>
       ggplot(aes(x = fct_reorder(ano_censos_pres, tot_escolas), y = tot_escolas)) + 
         geom_col(fill = "#4C6CB3") +
         geom_text(aes(y = label_pos, label = label_val_abs_rel), 
-                  size = 5, 
+                  size = 4, 
                   fontface = "bold") +
         labs(
           title = "Mapeamento das escolas nos censos escolares",
@@ -524,7 +524,7 @@ base_unica_map_cnt_anos|>
           axis.ticks.x = element_blank(),
           axis.text.x = element_blank(),
           axis.title.x = element_blank(),
-          axis.text.y = element_text(size = 13.5)
+          axis.text.y = element_text(size = 12.5)
         )
 ```
 
@@ -564,7 +564,7 @@ base_unica_map_cnt_anos_uf |>
     geom_col(fill = "#4C6CB3") +
     geom_text(aes(label = lab_val_abs_rel), 
               hjust = -0.1,
-              size = 3.5, 
+              size = 2.25, 
               fontface = "bold") +
     labs(
       title = "Mapeamento das escolas nos censos escolares",
@@ -800,7 +800,7 @@ summary(resultados_geocod)
 str(resultados_geocod)
 ```
 
-Antes de se passar aos comentários sobre a geocodificação, uma nota sobre as mensagens de atenção (*warning messages*) merece ser feita. Longe de indicarem um erro no processamento, o objetivo delas é alertar para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
+Antes dos comentários sobre a geocodificação, mencione-se que as mensagens de atenção (*warning messages*) geradas estão apenas alertando para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
 
 Isso posto, observa-se que a lista criada (`resultados_geocod`) apresenta os dados geocodificados para cada um dos `r length(censo_esc_anos)` anos analisados. Essa forma de visualização, porém, é de difícil compreensão.
 
@@ -945,7 +945,7 @@ escolas_geocod_compatib |>
     geom_col(fill = "#4C6CB3") +
     geom_text(
       vjust = -0.25,
-      size = 5.5,
+      size = 4,
       fontface = "bold") +
     scale_y_discrete(expand = expansion(mult = c(0.05, 0.15))) +
     scale_x_discrete(labels = c(
@@ -961,7 +961,7 @@ escolas_geocod_compatib |>
       y = NULL) +
     theme_classic() +
     theme(
-      axis.text.x = element_text(size = 15),
+      axis.text.x = element_text(size = 15, angle = 45),
       plot.title = element_text(size = 20)
     )
 
@@ -974,14 +974,14 @@ escolas_geocod_compatib |>
     lab_val_abs_rel = str_c(tot_escolas, " (", prop,")"),
     precisao = factor(
       melhor_precisao,
-      levels = c("numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio"))# fct_relevel(melhor_precisao, "numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio")
+      levels = c("numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio"))
       ) |>
   drop_na() |> 
   ggplot(aes(x = precisao, y = tot_escolas, label = lab_val_abs_rel)) + # , label = (prop)
     geom_col(fill = "#4C6CB3") +
     geom_text(
       hjust = -0.15,
-      size = 3.5,
+      size = 2.5,
       fontface = "bold") +
     scale_y_discrete(expand = expansion(mult = c(0.05, 0.15))) +
     scale_x_discrete(labels = c(
