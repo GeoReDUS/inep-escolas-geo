@@ -6,7 +6,7 @@ date: 2026/05/11
 atualização: today 
 format: html
 =======
-date: 2026/04/10
+date: 2026/04/29
 date-modified: last-modified
 format:
   html:
@@ -57,8 +57,8 @@ Para facilitar possíveis alterações, atualizações, usos recorrentes e/ou no
 ```{r}
 #| label: def_var_reutilizáveis
 
-# Defina o número de bases analisadas (neste momento, três: 2023, 2024 e 2025)
-censo_esc_anos <- c(2023, 2024, 2025)
+# Defina o número de bases analisadas (neste momento, quatro: 2022, 2023, 2024 e 2025)
+censo_esc_anos <- c(2022, 2023, 2024, 2025)
 censo_esc_tot <- length(censo_esc_anos)
 ```
 
