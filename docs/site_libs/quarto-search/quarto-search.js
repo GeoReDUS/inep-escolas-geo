@@ -8,6 +8,7 @@ const kResultsArg = "show-results";
 // item is a more item (along with the type) and can be handled appropriately
 const kItemTypeMoreHref = "0767FDFD-0422-4E5A-BC8A-3BE11E5BBA05";
 
+<<<<<<< HEAD
 // Capture search params and clean ?q= from URL at module load time, before
 // any DOMContentLoaded handlers run. quarto-nav.js resolves all <a> hrefs
 // against window.location during DOMContentLoaded — if ?q= is still present,
@@ -20,6 +21,8 @@ if (kQuery) {
   window.history.replaceState({}, "", replacementUrl);
 }
 
+=======
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
 window.document.addEventListener("DOMContentLoaded", function (_event) {
   // Ensure that search is available on this page. If it isn't,
   // should return early and not do anything
@@ -49,12 +52,18 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
   // Used to determine highlighting behavior for this page
   // A `q` query param is expected when the user follows a search
   // to this page
+<<<<<<< HEAD
   const query = kQuery;
+=======
+  const currentUrl = new URL(window.location);
+  const query = currentUrl.searchParams.get(kQueryArg);
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
   const showSearchResults = currentUrl.searchParams.get(kResultsArg);
   const mainEl = window.document.querySelector("main");
 
   // highlight matches on the page
   if (query && mainEl) {
+<<<<<<< HEAD
     highlight(query, mainEl);
 
     // Activate tabs on pageshow — after tabsets.js restores localStorage state.
@@ -73,6 +82,15 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
         }
       }
     }, { once: true });
+=======
+    // perform any highlighting
+    highlight(escapeRegExp(query), mainEl);
+
+    // fix up the URL to remove the q query param
+    const replacementUrl = new URL(window.location);
+    replacementUrl.searchParams.delete(kQueryArg);
+    window.history.replaceState({}, "", replacementUrl);
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
   }
 
   // function to clear highlighting on the page when the search query changes
@@ -85,6 +103,21 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
     }
   };
 
+<<<<<<< HEAD
+=======
+  // Clear search highlighting when the user scrolls sufficiently
+  const resetFn = () => {
+    resetHighlighting("");
+    window.removeEventListener("quarto-hrChanged", resetFn);
+    window.removeEventListener("quarto-sectionChanged", resetFn);
+  };
+
+  // Register this event after the initial scrolling and settling of events
+  // on the page
+  window.addEventListener("quarto-hrChanged", resetFn);
+  window.addEventListener("quarto-sectionChanged", resetFn);
+
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
   // Responsively switch to overlay mode if the search is present on the navbar
   // Note that switching the sidebar to overlay mode requires more coordinate (not just
   // the media query since we generate different HTML for sidebar overlays than we do
@@ -199,8 +232,13 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
                     title: isExpanded
                       ? language["search-hide-matches-text"]
                       : remainingCount === 1
+<<<<<<< HEAD
                         ? `${remainingCount} ${language["search-more-match-text"]}`
                         : `${remainingCount} ${language["search-more-matches-text"]}`,
+=======
+                      ? `${remainingCount} ${language["search-more-match-text"]}`
+                      : `${remainingCount} ${language["search-more-matches-text"]}`,
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
                     type: kItemTypeMore,
                     href: kItemTypeMoreHref,
                   });
@@ -318,8 +356,14 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
               return createElement(
                 "div",
                 {
+<<<<<<< HEAD
                   class: `quarto-search-no-results${hasQuery ? "" : " no-query"
                     }`,
+=======
+                  class: `quarto-search-no-results${
+                    hasQuery ? "" : " no-query"
+                  }`,
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
                 },
                 language["search-no-results-text"]
               );
@@ -365,12 +409,15 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
             },
 
             item({ item, createElement }) {
+<<<<<<< HEAD
               if (item.text && item.href && !item.href.includes('?q=')) {
                 const [main, hash] = item.href.split('#')
                 const hashAppend = hash ? '#' + hash : ''
                 item.href = main + '?q=' + encodeURIComponent(state.query) + hashAppend
               }
 
+=======
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
               return renderItem(
                 item,
                 createElement,
@@ -481,6 +528,7 @@ function configurePlugins(quartoSearchOptions) {
         window.aa &&
         window["@algolia/autocomplete-plugin-algolia-insights"]
       ) {
+<<<<<<< HEAD
         // Check if cookie consent is enabled from search options
         const cookieConsentEnabled = algoliaOptions["cookie-consent-enabled"] || false;
 
@@ -494,6 +542,12 @@ function configurePlugins(quartoSearchOptions) {
           apiKey,
           useCookie: cookieConsentEnabled,
           userToken: userToken,
+=======
+        window.aa("init", {
+          appId,
+          apiKey,
+          useCookie: true,
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
         });
 
         const { createAlgoliaInsightsPlugin } =
@@ -1119,6 +1173,7 @@ function clearHighlight(searchterm, el) {
   }
 }
 
+<<<<<<< HEAD
 /** Get all html nodes under the given `root` that don't have children. */
 function getLeafNodes(root) {
   let leaves = [];
@@ -1314,6 +1369,60 @@ function highlight(searchStr, el) {
   for (const [node, lohis] of matchesGroupedByNode) {
     markMatches(node, lohis)
   }
+=======
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}
+
+// highlight matches
+function highlight(term, el) {
+  const termRegex = new RegExp(term, "ig");
+  const childNodes = el.childNodes;
+
+  // walk back to front avoid mutating elements in front of us
+  for (let i = childNodes.length - 1; i >= 0; i--) {
+    const node = childNodes[i];
+
+    if (node.nodeType === Node.TEXT_NODE) {
+      // Search text nodes for text to highlight
+      const text = node.nodeValue;
+
+      let startIndex = 0;
+      let matchIndex = text.search(termRegex);
+      if (matchIndex > -1) {
+        const markFragment = document.createDocumentFragment();
+        while (matchIndex > -1) {
+          const prefix = text.slice(startIndex, matchIndex);
+          markFragment.appendChild(document.createTextNode(prefix));
+
+          const mark = document.createElement("mark");
+          mark.appendChild(
+            document.createTextNode(
+              text.slice(matchIndex, matchIndex + term.length)
+            )
+          );
+          markFragment.appendChild(mark);
+
+          startIndex = matchIndex + term.length;
+          matchIndex = text.slice(startIndex).search(new RegExp(term, "ig"));
+          if (matchIndex > -1) {
+            matchIndex = startIndex + matchIndex;
+          }
+        }
+        if (startIndex < text.length) {
+          markFragment.appendChild(
+            document.createTextNode(text.slice(startIndex, text.length))
+          );
+        }
+
+        el.replaceChild(markFragment, node);
+      }
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      // recurse through elements
+      highlight(term, node);
+    }
+  }
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
 }
 
 /* Link Handling */

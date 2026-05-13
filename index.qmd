@@ -1,9 +1,20 @@
 ---
-title: "Procedimento para checagem e atualização da base geoespacial das escolas (2023 e 2025)"
+title: "Procedimento para checagem e atualização da base geoespacial das escolas (2022 e 2025)"
 author: "CEM-USP (Thiago C. Jacovine)"
+<<<<<<< HEAD
 date: 2026/05/11
 atualização: today 
 format: html
+=======
+date: 2026/04/10
+date-modified: last-modified
+format:
+  html:
+    toc: true
+    toc-title: "Nesta página"
+    toc-depth: 3
+    css: styles.css
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
 ---
 
 ## Visão geral
@@ -474,7 +485,11 @@ base_unica_map_cnt_ano_orig |>
     ggplot(aes(x = fct_infreq(ano_cn_escolar), y = tot_escolas)) +
       geom_col(fill = "#4C6CB3") +
       geom_text(aes(y = label_pos, label = label_val_abs_rel), 
+<<<<<<< HEAD
                   size = 5, 
+=======
+                  size = 4, 
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
                   fontface = "bold") +
       labs(
         title = "Mapeamento das escolas nos censos escolares",
@@ -491,7 +506,11 @@ base_unica_map_cnt_ano_orig |>
         axis.ticks.x = element_blank(),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
+<<<<<<< HEAD
         axis.text.y = element_text(size = 13.5)
+=======
+        axis.text.y = element_text(size = 12.5)
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
         )
 
 
@@ -504,7 +523,11 @@ base_unica_map_cnt_anos|>
       ggplot(aes(x = fct_reorder(ano_censos_pres, tot_escolas), y = tot_escolas)) + 
         geom_col(fill = "#4C6CB3") +
         geom_text(aes(y = label_pos, label = label_val_abs_rel), 
+<<<<<<< HEAD
                   size = 5, 
+=======
+                  size = 4, 
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
                   fontface = "bold") +
         labs(
           title = "Mapeamento das escolas nos censos escolares",
@@ -519,7 +542,11 @@ base_unica_map_cnt_anos|>
           axis.ticks.x = element_blank(),
           axis.text.x = element_blank(),
           axis.title.x = element_blank(),
+<<<<<<< HEAD
           axis.text.y = element_text(size = 13.5)
+=======
+          axis.text.y = element_text(size = 12.5)
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
         )
 ```
 
@@ -559,7 +586,11 @@ base_unica_map_cnt_anos_uf |>
     geom_col(fill = "#4C6CB3") +
     geom_text(aes(label = lab_val_abs_rel), 
               hjust = -0.1,
+<<<<<<< HEAD
               size = 3.5, 
+=======
+              size = 2.25, 
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
               fontface = "bold") +
     labs(
       title = "Mapeamento das escolas nos censos escolares",
@@ -795,7 +826,11 @@ summary(resultados_geocod)
 str(resultados_geocod)
 ```
 
+<<<<<<< HEAD
 Antes de se passar aos comentários sobre a geocodificação, uma nota sobre as mensagens de atenção (*warning messages*) merece ser feita. Longe de indicarem um erro no processamento, o objetivo delas é alertar para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
+=======
+Antes dos comentários sobre a geocodificação, mencione-se que as mensagens de atenção (*warning messages*) geradas estão apenas alertando para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
 
 Isso posto, observa-se que a lista criada (`resultados_geocod`) apresenta os dados geocodificados para cada um dos `r length(censo_esc_anos)` anos analisados. Essa forma de visualização, porém, é de difícil compreensão.
 
@@ -940,7 +975,11 @@ escolas_geocod_compatib |>
     geom_col(fill = "#4C6CB3") +
     geom_text(
       vjust = -0.25,
+<<<<<<< HEAD
       size = 5.5,
+=======
+      size = 4,
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       fontface = "bold") +
     scale_y_discrete(expand = expansion(mult = c(0.05, 0.15))) +
     scale_x_discrete(labels = c(
@@ -956,7 +995,11 @@ escolas_geocod_compatib |>
       y = NULL) +
     theme_classic() +
     theme(
+<<<<<<< HEAD
       axis.text.x = element_text(size = 15),
+=======
+      axis.text.x = element_text(size = 15, angle = 45),
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       plot.title = element_text(size = 20)
     )
 
@@ -969,14 +1012,22 @@ escolas_geocod_compatib |>
     lab_val_abs_rel = str_c(tot_escolas, " (", prop,")"),
     precisao = factor(
       melhor_precisao,
+<<<<<<< HEAD
       levels = c("numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio"))# fct_relevel(melhor_precisao, "numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio")
+=======
+      levels = c("numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio"))
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       ) |>
   drop_na() |> 
   ggplot(aes(x = precisao, y = tot_escolas, label = lab_val_abs_rel)) + # , label = (prop)
     geom_col(fill = "#4C6CB3") +
     geom_text(
       hjust = -0.15,
+<<<<<<< HEAD
       size = 3.5,
+=======
+      size = 2.5,
+>>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       fontface = "bold") +
     scale_y_discrete(expand = expansion(mult = c(0.05, 0.15))) +
     scale_x_discrete(labels = c(
