@@ -1,11 +1,6 @@
 ---
 title: "Procedimento para checagem e atualização da base geoespacial das escolas (2022 e 2025)"
 author: "CEM-USP (Thiago C. Jacovine)"
-<<<<<<< HEAD
-date: 2026/05/11
-atualização: today 
-format: html
-=======
 date: 2026/04/29
 date-modified: last-modified
 format:
@@ -14,7 +9,6 @@ format:
     toc-title: "Nesta página"
     toc-depth: 3
     css: styles.css
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
 ---
 
 ## Visão geral
@@ -166,6 +160,25 @@ processar_censo_ano <- function(ano, max_tentativas = 3) {
 
     ## Importe os dados para o ambiente do R    
     ### Localize os microdados (dados descompactados)
+    #### Trate o caso de 2022, que apresenta especificidades
+    if (ano == 2022) {
+        # Liste o nome do diretòrio desconsiderando os caracteres especiais
+        pasta_2022 <- dir_ls(
+            path = pasta_dados_originais,
+            type = "directory",
+            regexp = str_glue("Censo.*Escolar.*{ano}"),
+            ignore.case = TRUE
+        )
+        # Altere o nome da pasta para o ano de 2022
+        if (length(pasta_2022) == 1) {
+            pasta_destino <- file.path(pasta_dados_originais, str_c("microdados_censo_escolar_", ano))
+            
+            if (!dir_exists(pasta_destino)) {
+                file_move(pasta_2022, pasta_destino)
+            }
+        }
+}
+    
     if (ano != 2025) {
     micro_base <- dir_ls(
         path = file.path(pasta_dados_originais, str_c("microdados_censo_escolar_", ano)),
@@ -369,9 +382,10 @@ base_unica_map_com_rep <- base_unic_cens_edu_orig |>
        
         # Crie uma variável para nomear as classes relacionadas ao cômputo feito
         tipo_censos_pres = case_when(
-            no_censos_pres == 1 ~ "exclusivo",
-            no_censos_pres == 2 ~ "duas_bases",
-            no_censos_pres == 3 ~ "comum")
+            no_censos_pres == 1 ~ "1_base",
+            no_censos_pres == 2 ~ "2_bases",
+            no_censos_pres == 3 ~ "3_bases",
+            no_censos_pres == 4 ~ "4_bases")
   ) |>
     # Desfaça os grupos criados
     ungroup()
@@ -401,7 +415,7 @@ func_tab_esc_dois_ou_mais_anos <- function(ano, base_dados_censo_esc) {
   # Defina as operações que serão realizadas
   base_dados_censo_esc |>
     filter(no_censos_pres > 1 & ano_cn_escolar == ano) |>
-    group_by(tipo_censos_pres ) |>
+    group_by(tipo_censos_pres) |>
     count(tipo_censos_pres , ano_censos_pres, name = "tot") |>
     ungroup()
 }
@@ -416,8 +430,8 @@ map(
 
 Considerando os dados expostos, que tratam das escolas presentes em mais de um censo escolar, duas constatações podem ser feitas:
 
-1. A depender do ano de referência da base, os números variam para os casos em que uma escola está presente em dois censos (2023-2024, 2024-2025, 2023-2025);
-2. Independentemente do ano de referência, o número de escolas presentes nos três levantamentos é o mesmo (170866).
+1. A depender do ano de referência da base, os números variam para os casos em que uma escola está presente em dois censos ou três anos;
+2. Independentemente do ano de referência, o número de escolas presentes em todos os levantamentos é o mesmo (167499).
 
 
 ## Criando uma base única sem repetição de escolas
@@ -435,7 +449,7 @@ Definida a referência temporal, a seguir cria-se a base com todas as escolas pr
 
 # Crie uma base sem as repetições dos registros originais por anos (REF.: 2024).
 base_unica_map <- base_unica_map_com_rep |>
-  mutate(ano_cn_escolar = factor(ano_cn_escolar, levels = c(2025, 2023, 2024))) |> # Para ordernar em função dos anos mais recentes, substitua o parâmetro "levels = c(...)" por "ordered = TRUE"
+  mutate(ano_cn_escolar = factor(ano_cn_escolar, levels = c(2025, 2022, 2023, 2024))) |> # Para ordernar em função dos anos mais recentes, substitua o parâmetro "levels = c(...)" por "ordered = TRUE"
   arrange(cod_escola, desc(no_censos_pres), desc(ano_cn_escolar)) |>
   distinct(cod_escola, .keep_all = T)
 
@@ -456,21 +470,22 @@ base_unica_map_cnt_ano_orig <- base_unica_map |>
 
 # Compare a presença das escolas ao longo dos anos - ano mais atual (2024), após análise empírica
 base_unica_map_cnt_anos <- base_unica_map |>
-  mutate(tipo_censos_pres = factor(tipo_censos_pres , labels = c("Comum (3 bases)", "Compartilhado (2 bases)", "Exclusivo (1 base)"))) |>
+  mutate(tipo_censos_pres = factor(tipo_censos_pres)) |>
   # group_by(sg_uf) |> # Ative para ver o comportamento por estados. Caso queira realizar a leitura por município, acrescente a variável "nm_mun" 
   count(tipo_censos_pres , ano_censos_pres, name = "tot_escolas") |>
-  mutate(prop = scales::percent(tot_escolas/sum(tot_escolas), accuracy = 0.1)) 
+  mutate(prop = scales::percent(tot_escolas/sum(tot_escolas), accuracy = 0.1)) |> 
+  arrange(desc(tipo_censos_pres), ano_censos_pres)
 
 # Plote as duas tabelas
 ## Origem do dado
 base_unica_map_cnt_ano_orig |>
-  janitor::adorn_totals() |> 
-  knitr::kable(col.names = c("Ano de origem do censo escolar", "Total de escolas", "Proporção"), caption = "Origem dos dados escolares (ano)", align = 'ccc')
+    janitor::adorn_totals() |> 
+    knitr::kable(col.names = c("Ano de origem do censo escolar", "Total de escolas", "Proporção"), caption = "Origem dos dados escolares (ano)", align = 'ccc')
 
 ## Presença ao longo dos anos
-base_unica_map_cnt_anos |> 
-  janitor::adorn_totals() |> 
-  knitr::kable(col.names = c("Presença das escolas", "Anos", "Total de escolas", "Proporção (%)"), caption = "Presença das escolas ao longo dos censos escolares (contagem por ano)", align = "llcc")
+base_unica_map_cnt_anos |>
+    janitor::adorn_totals() |> 
+    knitr::kable(col.names = c("Presença das escolas", "Anos", "Total de escolas", "Proporção (%)"), caption = "Presença das escolas ao longo dos censos escolares (contagem por ano)", align = "llcc")
 ```
 
 Como esperado, a maioria dos dados que compõem a base são de 2024, ano de referência adotado anteriormente. Por sua vez, a segunda tabela reforça alguns dados conhecidos, como a permanência de grande parte das escolas ao longo do período analisado (`base_unica_map_cnt_anos[1, "prop"]  |> pull()`), e revela os que estão presentes em apenas em um ano do período. Esse mesmo quadro é exposto no gráfico a seguir.
@@ -485,11 +500,7 @@ base_unica_map_cnt_ano_orig |>
     ggplot(aes(x = fct_infreq(ano_cn_escolar), y = tot_escolas)) +
       geom_col(fill = "#4C6CB3") +
       geom_text(aes(y = label_pos, label = label_val_abs_rel), 
-<<<<<<< HEAD
-                  size = 5, 
-=======
                   size = 4, 
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
                   fontface = "bold") +
       labs(
         title = "Mapeamento das escolas nos censos escolares",
@@ -506,11 +517,7 @@ base_unica_map_cnt_ano_orig |>
         axis.ticks.x = element_blank(),
         axis.text.x = element_blank(),
         axis.title.x = element_blank(),
-<<<<<<< HEAD
-        axis.text.y = element_text(size = 13.5)
-=======
         axis.text.y = element_text(size = 12.5)
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
         )
 
 
@@ -523,11 +530,7 @@ base_unica_map_cnt_anos|>
       ggplot(aes(x = fct_reorder(ano_censos_pres, tot_escolas), y = tot_escolas)) + 
         geom_col(fill = "#4C6CB3") +
         geom_text(aes(y = label_pos, label = label_val_abs_rel), 
-<<<<<<< HEAD
-                  size = 5, 
-=======
                   size = 4, 
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
                   fontface = "bold") +
         labs(
           title = "Mapeamento das escolas nos censos escolares",
@@ -537,16 +540,13 @@ base_unica_map_cnt_anos|>
         theme_classic() +
         theme(
           plot.title = element_text(size = 20),
+          plot.title.position = "plot",
           plot.subtitle = element_text(size = 15),
           axis.line.x = element_blank(),
           axis.ticks.x = element_blank(),
           axis.text.x = element_blank(),
           axis.title.x = element_blank(),
-<<<<<<< HEAD
-          axis.text.y = element_text(size = 13.5)
-=======
           axis.text.y = element_text(size = 12.5)
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
         )
 ```
 
@@ -561,7 +561,8 @@ Os dados por estado, por sua vez, podem ser vistos a seguir.
 base_unica_map_cnt_anos_uf <- base_unica_map |>
   mutate(
     # tipo_censos_pres = factor(tipo_censos_pres , labels = c("Comum (3 bases)", "Compartilhado (2 bases)", "Exclusivo (1 base)")),
-    ano_censos_pres = fct_relevel(ano_censos_pres, "2023, 2024, 2025", "2023, 2024", "2023, 2025", "2024, 2025", "2023", "2024", "2025")) |>
+    ano_censos_pres =     
+        fct_relevel(ano_censos_pres, "2022, 2023, 2024, 2025", "2022, 2023, 2024", "2022, 2023, 2025", "2022, 2024, 2025", "2023, 2024, 2025", "2022, 2023", "2022, 2024", "2022, 2025", "2023, 2024", "2023, 2025", "2024, 2025", "2022", "2023",  "2024", "2025"  )) |>
   group_by(sg_uf, .drop = FALSE) |> # Caso queira realizar a leitura por município, acrescente a variável "nm_mun" 
   count(ano_censos_pres, name = "tot_escolas") |>
   mutate(prop = scales::percent(tot_escolas/sum(tot_escolas), accuracy = 0.1))
@@ -586,11 +587,7 @@ base_unica_map_cnt_anos_uf |>
     geom_col(fill = "#4C6CB3") +
     geom_text(aes(label = lab_val_abs_rel), 
               hjust = -0.1,
-<<<<<<< HEAD
-              size = 3.5, 
-=======
               size = 2.25, 
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
               fontface = "bold") +
     labs(
       title = "Mapeamento das escolas nos censos escolares",
@@ -601,7 +598,8 @@ base_unica_map_cnt_anos_uf |>
     theme(axis.line.x = element_blank(),
           axis.ticks.x = element_blank(),
           axis.text.x = element_blank(),
-          axis.title.x = element_blank()
+          axis.title.x = element_blank(),
+          axis.text.y = element_text(size = 7),
           ) +
     facet_wrap(vars(sg_uf)) +
     scale_y_continuous(expand = expansion(mult = c(0.00, 0.2)))
@@ -826,11 +824,7 @@ summary(resultados_geocod)
 str(resultados_geocod)
 ```
 
-<<<<<<< HEAD
-Antes de se passar aos comentários sobre a geocodificação, uma nota sobre as mensagens de atenção (*warning messages*) merece ser feita. Longe de indicarem um erro no processamento, o objetivo delas é alertar para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
-=======
 Antes dos comentários sobre a geocodificação, mencione-se que as mensagens de atenção (*warning messages*) geradas estão apenas alertando para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
 
 Isso posto, observa-se que a lista criada (`resultados_geocod`) apresenta os dados geocodificados para cada um dos `r length(censo_esc_anos)` anos analisados. Essa forma de visualização, porém, é de difícil compreensão.
 
@@ -882,7 +876,7 @@ escolas_geocod_tds_anos <- escolas_geocod_tds_anos |>
   group_by(cod_escola) %>%
   
   # Identifique, em cada grupo, o menor desvio gerado pela geocodificação
-  mutate(menor_desvio_da_linha = pmin(desvio_metros_2023, desvio_metros_2024,desvio_metros_2025, na.rm = TRUE)) %>%
+  mutate(menor_desvio_da_linha = pmin(desvio_metros_2022,desvio_metros_2023, desvio_metros_2024, desvio_metros_2025, na.rm = TRUE)) %>%
   
   # Compare, identifique os evetuais valores ausentes (NA) das variáveis da base e replique os valores para cima e para baixo dentro do mesmo código de escola
   fill(everything(), .direction = "downup") %>%
@@ -975,11 +969,7 @@ escolas_geocod_compatib |>
     geom_col(fill = "#4C6CB3") +
     geom_text(
       vjust = -0.25,
-<<<<<<< HEAD
-      size = 5.5,
-=======
       size = 4,
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       fontface = "bold") +
     scale_y_discrete(expand = expansion(mult = c(0.05, 0.15))) +
     scale_x_discrete(labels = c(
@@ -995,12 +985,9 @@ escolas_geocod_compatib |>
       y = NULL) +
     theme_classic() +
     theme(
-<<<<<<< HEAD
-      axis.text.x = element_text(size = 15),
-=======
-      axis.text.x = element_text(size = 15, angle = 45),
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
-      plot.title = element_text(size = 20)
+      axis.text.x = element_text(size = 15, angle = 45, vjust = 0.5),
+      plot.title = element_text(size = 20),
+      plot.title.position = "plot"
     )
 
 # Crie um gráfico sobre a precisão das estimativas geradas durante a geocodificação (Estados - UF)
@@ -1012,22 +999,14 @@ escolas_geocod_compatib |>
     lab_val_abs_rel = str_c(tot_escolas, " (", prop,")"),
     precisao = factor(
       melhor_precisao,
-<<<<<<< HEAD
-      levels = c("numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio"))# fct_relevel(melhor_precisao, "numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio")
-=======
       levels = c("numero", "numero_aproximado", "logradouro", "cep", "localidade", "municipio"))
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       ) |>
   drop_na() |> 
   ggplot(aes(x = precisao, y = tot_escolas, label = lab_val_abs_rel)) + # , label = (prop)
     geom_col(fill = "#4C6CB3") +
     geom_text(
       hjust = -0.15,
-<<<<<<< HEAD
-      size = 3.5,
-=======
       size = 2.5,
->>>>>>> eea9f9583df485dab1b5f559cad9c6082317137c
       fontface = "bold") +
     scale_y_discrete(expand = expansion(mult = c(0.05, 0.15))) +
     scale_x_discrete(labels = c(
@@ -1044,7 +1023,8 @@ escolas_geocod_compatib |>
     theme_classic() +
     theme(
       axis.text.x = element_text(size = 5),
-      plot.title = element_text(size = 20)
+      plot.title = element_text(size = 20),
+      plot.title.position = "plot"
     ) +
     facet_wrap(vars(sg_uf)) +
     coord_flip()
@@ -1110,6 +1090,7 @@ Realizadas esses primeiros ajustes, uma nova forma de registrar a presença das 
 
 escolas_geo_tot <- escolas_geo_tot |>
     mutate(
+        pres_ano_22 = str_detect(ano_censos_pres, pattern = "2022"),
         pres_ano_23 = str_detect(ano_censos_pres, pattern = "2023"),
         pres_ano_24 = str_detect(ano_censos_pres, pattern = "2024"),
         pres_ano_25 = str_detect(ano_censos_pres, pattern = "2025")
@@ -1174,7 +1155,7 @@ escolas_tot_geo <- st_as_sf(
 class(escolas_tot_geo)
 
 # Visualize rapidamente se a transformação ocorreu como esperado (os pontos deveriam formar uma ideia dos limites do Brasil)
-plot(escolas_tot_geo["cod_escola"])
+plot(escolas_tot_geo["cod_escola"], main = "Distribuição das escolas brasileiras (2022 a 2025)")
 ```
 
 Criado o objeto espacial, os dados serão exportados como geopackage, um formato de dados geoespacial aberto.
