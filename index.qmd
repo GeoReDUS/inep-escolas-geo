@@ -12,6 +12,7 @@ format:
 ---
 
 ## Visão geral
+
 O presente documento disponibiliza o procedimento para a definição, a manutenção e a atualização dos dados geoespaciais das escolas brasileiras presentes na plataforma [GeoReDUS](https://www.redus.org.br/georedus?v=v0). O **objetivo** é obter uma **base geoespacial única das escolas ao longo do tempo**. Para isso, propõe-se um procedimento de compatibilização espaço-temporal dos dados.
 
 A proposta, como pode ser vista neste documento e no sumário localizado no canto superior direito da página, está estruturada em "grandes etapas". São elas: i) preparação do ambiente local para armazenamento dos dados originais (microdados do [censo escolar](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar) e [catálogo de escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas); ii) acesso, importação e definição das operações relacionadas à limpeza e à organização da base compatibilizada dos microdados escolares; iii) breve exploração e análise dos dados; iv) geocodificação das escolas que não apresentam coordenadas geográficas e v) exportação dos resultados gerados[^1].
@@ -56,7 +57,6 @@ censo_esc_anos <- c(2022, 2023, 2024, 2025)
 censo_esc_tot <- length(censo_esc_anos)
 ```
 
-
 ## Obtenção, transformação e organização dos dados
 
 A partir deste momento, serão realizadas algumas operações voltadas à obtenção, ao tratamento e à organização dos dados que serão utilizados para gerar a base geoespacial das escolas brasileiras ao longo do tempo.
@@ -92,7 +92,7 @@ pasta_dados_processados <- pastas[3]
 
 ### Criando o procedimento para a obtenção, o tratamento e a organização dos dados
 
-A obtenção, o tratamento e a organização dos microdados dos censos escolares ao longo do tempo pode ser realizada de diferentes formas. No presente caso, optou-se por criar uma função que reúne as etapas necessárias para essas ações. 
+A obtenção, o tratamento e a organização dos microdados dos censos escolares ao longo do tempo pode ser realizada de diferentes formas. No presente caso, optou-se por criar uma função que reúne as etapas necessárias para essas ações.
 
 Por meio dela, os dados originais serão:
 
@@ -177,8 +177,8 @@ processar_censo_ano <- function(ano, max_tentativas = 3) {
                 file_move(pasta_2022, pasta_destino)
             }
         }
-}
-    
+    }
+
     if (ano != 2025) {
     micro_base <- dir_ls(
         path = file.path(pasta_dados_originais, str_c("microdados_censo_escolar_", ano)),
@@ -303,7 +303,7 @@ processar_censo_ano <- function(ano, max_tentativas = 3) {
 
 Criada a função, basta aplicá-la ao conjunto de dados de interesse. O resultado esperado, neste caso, é a geração dos microdados das escolas ativas para cada um dos anos analisados.
 
-::: {.callout-note}
+::: callout-note
 ## Lembrete
 
 *Escolas ativas* são aquelas que, de acordo com os dados do censo escolar, estão *em funcionamento* e apresentam *ao menos uma matrícula ativa*.
@@ -353,7 +353,6 @@ if (length(result_negat) > 0) {
     message(strrep("=", 50))
 ```
 
-
 ## Explorando os dados dos Censos Escolares (`r as.character(censo_esc_anos)`)
 
 ### Mapeando as escolas ao longo dos anos
@@ -364,7 +363,7 @@ Para facilitar a visualização desse quadro e sintetizar essas informações, t
 
 - `no_censo_pres`: quantifica o número de vezes que a escola aparece durante o período analisado (por ex., o número 3 indica que a escola está presente em três levantamentos);
 - `ano_censos_pres`: registra o ano dos censos em que a escola está presente (usando o mesmo exemplo anterior, o registro seria igual a "2023, 2024 e 2025"), e,
-- `tipo_censos_pres `: expressa, por meio de classes, o número de vezes que a escola aparece na base.
+- `tipo_censos_pres`: expressa, por meio de classes, o número de vezes que a escola aparece na base.
 
 ```{r}
 #| label: crie_var_aux_base_unica_micro
@@ -397,8 +396,8 @@ A seguir, busca-se evidenciar quais são as escolas presentes em mais de um cens
 
 ```{r}
 #| label: crie_bases_especif_esc_+1_ano
-
-# Crie novas bases, para cada ano, com os casos compartilhados (neste caso, com escolas presentes, simultaneamente, em dois ou mais censos)
+#| output: "asis"
+#| echo: false
 
 ## Crie uma função para realizar as operações necessárias
 func_tab_esc_dois_ou_mais_anos <- function(ano, base_dados_censo_esc) {
@@ -414,18 +413,50 @@ func_tab_esc_dois_ou_mais_anos <- function(ano, base_dados_censo_esc) {
   
   # Defina as operações que serão realizadas
   base_dados_censo_esc |>
+    # Selecione as escolas que aparecem em mais de um ano
     filter(no_censos_pres > 1 & ano_cn_escolar == ano) |>
+
+    # Agrupe as escolas em função dos anos em que elas se encontram presentes
     group_by(tipo_censos_pres) |>
-    count(tipo_censos_pres , ano_censos_pres, name = "tot") |>
+
+    # Compute o número de escolas de acordo com os anos em que elas se encontram presentes
+    count(tipo_censos_pres, ano_censos_pres, name = "tot") |>
     ungroup()
 }
 
-# Produza as tabelas por ano
-map(
+# Produza a lista de tabelas (data.frames puros) por ano
+list_tab <- map(
   censo_esc_anos,
-  ~ func_tab_esc_dois_ou_mais_anos(.x, base_unica_map_com_rep)) |> 
-    set_names(str_c("ano_", censo_esc_anos)) |> 
-    knitr::kable(col.names = c("Presença em mais de um censo escolar", "Anos", "Total de escolas"), caption = as.character(censo_esc_anos))
+  ~ func_tab_esc_dois_ou_mais_anos(.x, base_unica_map_com_rep)
+  ) |> 
+    set_names(str_c("ano_", censo_esc_anos))
+
+# Apresente as tabelas
+for (i in seq_along(list_tab)) {
+  
+  # Captura o ano corrente
+  ano_atual <- censo_esc_anos[i]
+  
+  # Cria o título exclusivo da tabela
+  titulo_tabela <- str_c("Dados do Censo Escolar referentes ao ano de ", ano_atual)
+  
+  # Cria a tabela usando o formato clássico de Markdown do kable
+  tabela_gerada <- knitr::kable(
+    list_tab[[i]], 
+    # format = "simple", # O formato 'simple' ativa os estilos nativos e limpos do Quarto
+    col.names = c("Presença em mais de um censo escolar", "Anos", "Total de escolas"), 
+    align = "c",
+    caption = titulo_tabela
+  )
+  
+  # Envia o Markdown estruturado direto para o interpretador visual do Quarto
+  # cat(knitr::asis_output(tabela_gerada))
+  print(tabela_gerada)
+  
+  # Adiciona espaçamentos obrigatórios para empilhar verticalmente sem fundir as tabelas
+  cat("\n\n<br>\n\n")
+}
+
 ```
 
 Considerando os dados expostos, que tratam das escolas presentes em mais de um censo escolar, duas constatações podem ser feitas:
@@ -499,7 +530,8 @@ base_unica_map_cnt_ano_orig |>
         label_pos = tot_escolas + max(tot_escolas) * 0.025) |> 
     ggplot(aes(x = fct_infreq(ano_cn_escolar), y = tot_escolas)) +
       geom_col(fill = "#4C6CB3") +
-      geom_text(aes(y = label_pos, label = label_val_abs_rel), 
+      geom_text(aes(y = label_pos, label = label_val_abs_rel),
+                  hjust = -0.05, 
                   size = 4, 
                   fontface = "bold") +
       labs(
@@ -529,8 +561,9 @@ base_unica_map_cnt_anos|>
     label_pos = tot_escolas + max(tot_escolas) * 0.025) |> 
       ggplot(aes(x = fct_reorder(ano_censos_pres, tot_escolas), y = tot_escolas)) + 
         geom_col(fill = "#4C6CB3") +
-        geom_text(aes(y = label_pos, label = label_val_abs_rel), 
-                  size = 4, 
+        geom_text(aes(y = label_pos, label = label_val_abs_rel),
+                  hjust = -0.05,
+                  size = 3.5, 
                   fontface = "bold") +
         labs(
           title = "Mapeamento das escolas nos censos escolares",
@@ -1171,4 +1204,5 @@ st_write(
     pasta_dados_processados,
     str_c("escolas_geo_hist.gpkg")),
   append = FALSE)
-```
+``` 
+
