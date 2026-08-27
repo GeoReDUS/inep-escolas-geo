@@ -1,6 +1,6 @@
 ---
 title: "Procedimento para checagem e atualização da base geoespacial das escolas (2022 a 2025)"
-author: "CEM-USP (Thiago C. Jacovine)"
+author: "CEM-USP (Thiago C. Jacovine, Kaue O. Almeida)"
 date: 2026/04/29
 date-modified: last-modified
 format:
