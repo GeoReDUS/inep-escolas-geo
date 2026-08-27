@@ -1,5 +1,5 @@
 ---
-title: "Procedimento para checagem e atualização da base geoespacial das escolas (2022 e 2025)"
+title: "Procedimento para checagem e atualização da base geoespacial das escolas (2022 a 2025)"
 author: "CEM-USP (Thiago C. Jacovine)"
 date: 2026/04/29
 date-modified: last-modified
@@ -13,19 +13,22 @@ format:
 
 ## Visão geral
 
-O presente documento disponibiliza o procedimento para a definição, a manutenção e a atualização dos dados geoespaciais das escolas brasileiras presentes na plataforma [GeoReDUS](https://www.redus.org.br/georedus?v=v0). O **objetivo** é obter uma **base geoespacial única das escolas ao longo do tempo**. Para isso, propõe-se um procedimento de compatibilização espaço-temporal dos dados.
+O presente documento disponibiliza o procedimento para a definição, a manutenção e a atualização dos dados geoespaciais das escolas brasileiras presentes na plataforma [GeoReDUS](https://www.redus.org.br/georedus?v=v0).
+O **objetivo** é obter uma **base geoespacial única das escolas ao longo do tempo**.
+Para isso, propõe-se um procedimento de compatibilização espaço-temporal dos dados.
 
-A proposta, como pode ser vista neste documento e no sumário localizado no canto superior direito da página, está estruturada em "grandes etapas". São elas: i) preparação do ambiente local para armazenamento dos dados originais (microdados do [censo escolar](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar) e [catálogo de escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas); ii) acesso, importação e definição das operações relacionadas à limpeza e à organização da base compatibilizada dos microdados escolares; iii) breve exploração e análise dos dados; iv) geocodificação das escolas que não apresentam coordenadas geográficas e v) exportação dos resultados gerados[^1].
-
-[^1] Caso você esteja usando o Positron como IDE, a estrutura do documento pode ser acompanhada por meio do campo OUTLINE, no canto inferior esquerdo da IDE.
+A proposta, como pode ser vista neste documento e no sumário localizado no canto superior direito da página, está estruturada em "grandes etapas".
+São elas: i) preparação do ambiente local para armazenamento dos dados originais (microdados do [censo escolar](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar) e [catálogo de escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas)); ii) acesso, importação e definição das operações relacionadas à limpeza e à organização da base compatibilizada dos microdados escolares; iii) breve exploração e análise dos dados; iv) geocodificação das escolas que não apresentam coordenadas geográficas e v) exportação dos resultados gerados.
 
 ## Preparação e configurações iniciais
 
-O primeiro passo para a geração dos dados geoespaciais das escolas consiste na preparação e estruturação do [R](https://cran.r-project.org/) e do ambiente local onde os dados serão armazenados. Dessa forma, o procedimento poderá ser reproduzido por qualquer pessoa em qualquer local, obtendo-se os mesmos resultados.
+O primeiro passo para a geração dos dados geoespaciais das escolas consiste na preparação e estruturação do [R](https://cran.r-project.org/) e do ambiente local onde os dados serão armazenados.
+Dessa forma, o procedimento poderá ser reproduzido por qualquer pessoa em qualquer local, obtendo-se os mesmos resultados.
 
 ### Carregando os pacotes necessários
 
-De modo a facilitar algumas operações, e tomando como guia os princípios [FAIR](https://www.go-fair.org/fair-principles/) e do [Tidyverse](https://tidyverse.org/), alguns pacotes serão habilitados. Note: graças ao uso do [Renv](https://rstudio.github.io/renv/), as mesmas versões dos pacotes utilizadas no momento de geração dos dados serão replicadas em seu ambiente local.
+De modo a facilitar algumas operações, e tomando como guia os princípios [FAIR](https://www.go-fair.org/fair-principles/) e do [Tidyverse](https://tidyverse.org/), alguns pacotes serão habilitados.
+Note: graças ao uso do [Renv](https://rstudio.github.io/renv/), as mesmas versões dos pacotes utilizadas no momento de geração dos dados serão replicadas em seu ambiente local.
 
 ```{r}
 #| label: habilite_pacotes
@@ -35,19 +38,30 @@ De modo a facilitar algumas operações, e tomando como guia os princípios [FAI
 # Defina quais serão as versões dos pacotes utilizadas (mesmas versões do presente documento)
 renv::restore()
 
-# Defina os pacotes que serão utilizados
-pckgs <- c("archive", "arrow", "fs", "geocodebr", "gt", "httr2", "here", "janitor", "knitr", "readxl", "quarto", "scales", "sf", "tidyverse", "zip")
-
-# Ative-os
-lapply(pckgs, library, character.only = TRUE)
-
-# Remova o objeto que armazenou o nome dos pacotes
-rm(pckgs)
+# Carregue os pacotes que serão utilizados
+library(archive)
+library(arrow)
+library(fs)
+library(geocodebr)
+library(gt)
+library(httr2)
+library(here)
+library(janitor)
+library(knitr)
+library(readxl)
+library(quarto)
+library(scales)
+library(sf)
+library(tidyverse)
+library(zip)
+library(curl)
+library(sfarrow)
 ```
 
 ### Definindo algumas variáveis para fins de reprodutibilidade/atualizações
 
-Para facilitar possíveis alterações, atualizações, usos recorrentes e/ou novas consultas, algumas variáveis já serão definidas neste momento. Por ora, elas compreendem o *total dos censos escolares analisados* (`censo_esc_tot`) e os seus respectivos *anos* (`censo_esc_anos`).
+Para facilitar possíveis alterações, atualizações, usos recorrentes e/ou novas consultas, algumas variáveis já serão definidas neste momento.
+Por ora, elas compreendem o *total dos censos escolares analisados* (`censo_esc_tot`) e os seus respectivos *anos* (`censo_esc_anos`).
 
 ```{r}
 #| label: def_var_reutilizáveis
@@ -92,11 +106,12 @@ pasta_dados_processados <- pastas[3]
 
 ### Criando o procedimento para a obtenção, o tratamento e a organização dos dados
 
-A obtenção, o tratamento e a organização dos microdados dos censos escolares ao longo do tempo pode ser realizada de diferentes formas. No presente caso, optou-se por criar uma função que reúne as etapas necessárias para essas ações.
+A obtenção, o tratamento e a organização dos microdados dos censos escolares ao longo do tempo podem ser realizadas de diferentes formas.
+No presente caso, optou-se por criar uma função que reúne as etapas necessárias para essas ações.
 
 Por meio dela, os dados originais serão:
 
-- Acessados via internet, baixados para o ambiente o local (computador) e importados para o R;
+- Acessados via internet, baixados para o ambiente local (computador) e importados para o R;
 - Realizadas operações de tratamento (exclusão e geração de variáveis; transformação de classes, (re)organização dos dados, etc.)
 - Geração de uma base única compatibilizada entre os anos analisados - base, essa, que servirá de insumo para a etapa de geocodificação, mais adiante.
 
@@ -105,203 +120,282 @@ Por meio dela, os dados originais serão:
 
 # Definição da função para processar os dados de cada ano
 processar_censo_ano <- function(ano, max_tentativas = 3) {
-    # Preparação dos registros das ações e alterações (logs)  
-    ## Especifique o caminho onde o arquivo de log será armazenado
-    arquivo_log <- file.path(pasta_logs, str_glue("processamento_{ano}_{Sys.Date()}.log"))
-   
-    ## Crie uma função para gerar as mensagens de log
-    log_msg <- function(msg, tipo = "INFO") {
-        timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
-        mensagem <- str_glue("[{timestamp}] [{tipo}] Ano {ano}: {msg}")
-        write_lines(mensagem, arquivo_log, append = TRUE)
-        message(mensagem)
-    }
-   
-    # Acesso aos dados
-    ## Gere uma mensagem indicando o início do processamento
-    log_msg("Início do processamento")
+  # Preparação dos registros das ações e alterações (logs)
+  ## Especifique o caminho onde o arquivo de log será armazenado
+  arquivo_log <- file.path(
+    pasta_logs,
+    str_glue("processamento_{ano}_{Sys.Date()}.log")
+  )
 
-    ## Defina o endereço para baixar o dado
-    base_url <- "https://download.inep.gov.br"
-   
-    ## Defina o nome do arquivo a ser baixado
-    arq_orig <- str_c("microdados_censo_escolar_", ano, if_else(ano == 2025, "_", ""), ".zip") # O if_else é usado para contemplar a grafia diferente dos microdados de 2025 (um traço antes do ".zip")
-   
-    ## Baixe os dados
-    for (tentativa in 1:max_tentativas) {
-        # Gere uma mensagem sobre o início do processo
-        log_msg(str_glue("Tentativa de download/importação {tentativa}/{max_tentativas}"))
-       
-        resultado <- tryCatch({
+  ## Crie uma função para gerar as mensagens de log
+  log_msg <- function(msg, tipo = "INFO") {
+    timestamp <- format(Sys.time(), "%Y-%m-%d %H:%M:%S")
+    mensagem <- str_glue("[{timestamp}] [{tipo}] Ano {ano}: {msg}")
+    write_lines(mensagem, arquivo_log, append = TRUE)
+    message(mensagem)
+  }
+
+  # Acesso aos dados
+  ## Gere uma mensagem indicando o início do processamento
+  log_msg("Início do processamento")
+
+  ## Defina o endereço para baixar o dado
+  base_url <- "https://download.inep.gov.br"
+
+  ## Defina o nome do arquivo a ser baixado
+  arq_orig <- str_c(
+    "microdados_censo_escolar_",
+    ano,
+    if_else(ano == 2025, "_", ""),
+    ".zip"
+  ) # O if_else é usado para contemplar a grafia diferente dos microdados de 2025 (um traço antes do ".zip")
+
+  ## Baixe os dados
+  for (tentativa in 1:max_tentativas) {
+    # Gere uma mensagem sobre o início do processo
+    log_msg(str_glue(
+      "Tentativa de download/importação {tentativa}/{max_tentativas}"
+    ))
+
+    resultado <- tryCatch(
+      {
         # Baixe o dado da fonte e salve-o localmente, caso ele ainda não exista
         if (!file.exists(file.path(pasta_dados_originais, arq_orig))) {
-            request(base_url) |>
-            req_url_path_append("dados_abertos") |>
-            req_url_path_append(arq_orig) |>
-            req_perform(path = file.path(pasta_dados_originais, arq_orig))
+          url_completa <- paste0(base_url, "/dados_abertos/", arq_orig)
+
+          destino <- file.path(pasta_dados_originais, arq_orig)
+
+          # curl_download is specifically designed for downloading large files to disk
+          curl_download(
+            url = url_completa,
+            destfile = destino,
+            quiet = FALSE # Set to FALSE to see a progress bar in your console
+          )
         }
-   
-    ## Renomeie a pasta original do dado de 2025, assumindo o mesmo padrão dos anos anteriores
-    if (str_detect(arq_orig, "_\\.zip$")) {
-        novo_nome <- str_replace(arq_orig, "_\\.zip$", ".zip")
-        caminho_novo <- path(pasta_dados_originais, novo_nome)
-        fs::file_move(file.path(pasta_dados_originais, arq_orig), caminho_novo)
-    }
 
-    ## Descompacte os dados
-    ### Defina o caminho do arquivo compactado (.zip)
-    arq_zip <- dir_ls(pasta_dados_originais, type = "file", regexp = glue::glue("microdados_censo_escolar_{ano}\\.zip$"))
-   
-    ### Extraia os dados dos arquivos compactados e salve-os na pasta de dados originais
-    zip::unzip(
-        zipfile = arq_zip,
-        exdir = pasta_dados_originais,
-        overwrite = TRUE)
+        ## Renomeie a pasta original do dado de 2025, assumindo o mesmo padrão dos anos anteriores
+        if (str_detect(arq_orig, "_\\.zip$")) {
+          novo_nome <- str_replace(arq_orig, "_\\.zip$", ".zip")
+          caminho_novo <- path(pasta_dados_originais, novo_nome)
+          fs::file_move(
+            file.path(pasta_dados_originais, arq_orig),
+            caminho_novo
+          )
+        }
 
-    ## Importe os dados para o ambiente do R    
-    ### Localize os microdados (dados descompactados)
-    #### Trate o caso de 2022, que apresenta especificidades
-    if (ano == 2022) {
-        # Liste o nome do diretòrio desconsiderando os caracteres especiais
-        pasta_2022 <- dir_ls(
-            path = pasta_dados_originais,
-            type = "directory",
-            regexp = str_glue("Censo.*Escolar.*{ano}"),
+        ## Descompacte os dados
+        ### Defina quais arquivos deverão ser descompactados
+        arq_orig_zip <-
+          pasta_dados_originais |>
+          dir_ls(
+            type = "file",
+            regexp = str_c("microdados.*", ano, "\\.zip$"),
             ignore.case = TRUE
-        )
-        # Altere o nome da pasta para o ano de 2022
-        if (length(pasta_2022) == 1) {
-            pasta_destino <- file.path(pasta_dados_originais, str_c("microdados_censo_escolar_", ano))
-            
-            if (!dir_exists(pasta_destino)) {
-                file_move(pasta_2022, pasta_destino)
-            }
-        }
-    }
+          )
 
-    if (ano != 2025) {
-    micro_base <- dir_ls(
-        path = file.path(pasta_dados_originais, str_c("microdados_censo_escolar_", ano)),
-        recurse = TRUE,
-        type = "file",
-        # Garante que, excluído o caso de 2025, apenas os microdados serão registrados
-        regexp = str_glue("microdados_ed_basica_{ano}\\.csv$")
+        ### Descompacte os arquivos
+        arq_orig_zip |>
+          walk(
+            \(x) {
+              zip::unzip(
+                x,
+                exdir = pasta_dados_originais,
+                overwrite = TRUE
+              )
+            },
+            .progress = TRUE
+          )
+
+        ## Importe os dados para o ambiente do R
+
+        ### Liste o nome do diretório desconsiderando os caracteres especiais
+        caminho_original <- dir_ls(
+          path = pasta_dados_originais,
+          type = "directory",
+          regexp = str_glue("Censo.*Escolar.*{ano}"),
+          ignore.case = TRUE
         )
-    } else {
-    micro_base <- dir_ls(
-        path = file.path(pasta_dados_originais, str_c("microdados_censo_escolar_", ano)),
-        recurse = TRUE,
-        type = "file",
-        glob = "*.csv"
-        ) |>
-        str_subset(
-            pattern = "Curso_Tecnico_2025",
-            negate = TRUE)
-    }
-   
-    ### Crie uma mensagem indicando a ausência do arquivo, caso ele não seja encontrado
-    if (length(micro_base) == 0) stop("Arquivo CSV de microdados não encontrado")
-   
-    ### Leia os dados brutos (microdados)
-    if (ano != 2025) {
-        micro_orig <- read_delim(
+
+        # Altere o nome da pasta para o ano de 2022, adotando o mesmo padrão dos demais anos
+        ## Defina o caminhho e o nome da nova pasta
+        pasta_destino <- file.path(
+          pasta_dados_originais,
+          str_c("microdados_censo_escolar_", ano)
+        )
+
+        ## Cheque e, se for o caso, altere o nome da pasta antiga
+        if (!dir_exists(pasta_destino)) {
+          file_move(caminho_original, pasta_destino)
+        }
+
+        if (ano != 2025) {
+          micro_base <- dir_ls(
+            path = file.path(
+              pasta_dados_originais,
+              str_c("microdados_censo_escolar_", ano)
+            ),
+            recurse = TRUE,
+            type = "file",
+            # Garante que, excluído o caso de 2025, apenas os microdados serão registrados
+            regexp = str_glue("microdados_ed_basica_{ano}\\.csv$")
+          )
+        } else {
+          micro_base <- dir_ls(
+            path = file.path(
+              pasta_dados_originais,
+              str_c("microdados_censo_escolar_", ano)
+            ),
+            recurse = TRUE,
+            type = "file",
+            glob = "*.csv"
+          ) |>
+            str_subset(
+              pattern = "Curso_Tecnico_2025",
+              negate = TRUE
+            )
+        }
+
+        ### Crie uma mensagem indicando a ausência do arquivo, caso ele não seja encontrado
+        if (length(micro_base) == 0) {
+          stop("Arquivo CSV de microdados não encontrado")
+        }
+
+        ### Leia os dados brutos (microdados)
+        if (ano != 2025) {
+          micro_orig <- read_delim(
             micro_base,
             delim = ";",
             locale = locale(
-                decimal_mark = ",",
-                grouping_mark = ".",
-                encoding = "latin1"),
-            col_types = cols(.default = col_character())) |>
+              decimal_mark = ",",
+              grouping_mark = ".",
+              encoding = "latin1"
+            ),
+            col_types = cols(.default = col_character())
+          ) |>
             clean_names() |>
             arrange(co_entidade)
         } else {
-        micro_orig <- micro_base |>
+          micro_orig <- micro_base |>
             # Leia os dados de cada arquivo
             map(
-                ~ read_csv2(.x,
+              ~ read_csv2(
+                .x,
                 show_col_types = FALSE,
                 locale = locale(encoding = "latin1"), # ISO-8859-1
-                col_types = cols(.default = col_character()))
+                col_types = cols(.default = col_character())
+              )
             ) |>
-            # Junte todos os arquivos em uma base única  
-            reduce(full_join, by = c("CO_ENTIDADE", "NU_ANO_CENSO")
-            ) |>
+            # Junte todos os arquivos em uma base única
+            reduce(full_join, by = c("CO_ENTIDADE", "NU_ANO_CENSO")) |>
             # Padronize a nomenclatura das variáveis
             janitor::clean_names() |>
             # Organize a base a partir do código das escolas
             arrange(co_entidade)
         }
 
-    ### Crie uma mensagem indicando o número de linhas e colunas do dado bruto carregado (microdado)
-    log_msg(str_glue("Dados brutos carregados: {nrow(micro_orig)} linhas, {ncol(micro_orig)} colunas"))
-   
-    # Transformação e organização dos dados
+        ### Crie uma mensagem indicando o número de linhas e colunas do dado bruto carregado (microdado)
+        log_msg(str_glue(
+          "Dados brutos carregados: {nrow(micro_orig)} linhas, {ncol(micro_orig)} colunas"
+        ))
+
+        # Transformação e organização dos dados
         microdados_esc_ativ <- micro_orig |>
-            # Selecione as variáveis de interesse
-            select(nu_ano_censo, sg_uf, no_municipio, co_municipio, co_cep, ds_endereco, nu_endereco, no_bairro, no_entidade, co_entidade, tp_dependencia, tp_situacao_funcionamento, qt_mat_bas
-            ) |>
-           
-            # Filtre apenas as escolas ativas (em funcionamento e com ao menos 1 matrícula)
-            filter(
-                tp_situacao_funcionamento == 1 &
-                if_any(starts_with("qt_mat"), ~ . > 0)) |>
-            select(!tp_situacao_funcionamento) |>
+          # Selecione as variáveis de interesse
+          select(any_of(c(
+            "nu_ano_censo",
+            "sg_uf",
+            "no_municipio",
+            "co_municipio",
+            "co_cep",
+            "ds_endereco",
+            "nu_endereco",
+            "no_bairro",
+            "no_entidade",
+            "co_entidade",
+            "tp_dependencia",
+            "tp_situacao_funcionamento",
+            "qt_mat_bas"
+          ))) |>
 
-            # Mude a classe de algumas variáveis
-            mutate(
-                # Substitua os valores 88888 por NA nas variáveis numéricas
-                across(where(is.numeric), ~ na_if(., 88888)),
+          # Filtre apenas as escolas ativas (em funcionamento e com ao menos 1 matrícula)
+          filter(
+            tp_situacao_funcionamento == 1 &
+              if_any(starts_with("qt_mat"), ~ . > 0)
+          ) |>
+          select(!tp_situacao_funcionamento) |>
 
-                # Recodifique a variável de tipo de dependência administrativa
-                tp_dependencia = recode(tp_dependencia,
-                                    "1" = "Pública - Federal",
-                                    "2" = "Pública - Estadual",
-                                    "3" = "Pública - Municipal",
-                                    "4" = "Privada")
-            ) |>
+          # Mude a classe de algumas variáveis
+          mutate(
+            # Substitua os valores 88888 por NA nas variáveis numéricas
+            across(where(is.numeric), ~ na_if(., 88888)),
 
-            # Renomeie as variáveis para o padrão utilizado na plataforma GeoReDUS
+            # Recodifique a variável de tipo de dependência administrativa
+            tp_dependencia = recode(
+              tp_dependencia,
+              "1" = "Federal",
+              "2" = "Estadual",
+              "3" = "Municipal",
+              "4" = "Privada"
+            )
+          ) |>
+
+          # Renomeie as variáveis para o padrão utilizado na plataforma GeoReDUS
+          rename(
+            ano_cn_escolar = nu_ano_censo,
+            nm_mun = no_municipio,
+            cod_mun = co_municipio,
+            nm_escola = no_entidade,
+            cod_escola = co_entidade,
+            tp_adm = tp_dependencia
+          )
+
+        #Renomeia as variáveis de endereço para o padrão utilizado na plataforma GeoReDUS, exceto para o ano de 2025
+        if (ano != 2025) {
+          microdados_esc_ativ <- microdados_esc_ativ |>
             rename(
-                ano_cn_escolar = nu_ano_censo,
-                nm_mun         = no_municipio,
-                cod_mun        = co_municipio,
-                cep            = co_cep,
-                endereco       = ds_endereco,
-                num_endereco   = nu_endereco,
-                nm_bairro      = no_bairro,
-                nm_escola      = no_entidade,
-                cod_escola     = co_entidade,
-                tp_adm         = tp_dependencia
-                )
-       
+              cep = co_cep,
+              endereco = ds_endereco,
+              numero = nu_endereco,
+              bairro = no_bairro
+            )
+        }
+
         ## Crie uma mensagem indicando o número de linhas e colunas do dado final gerado (microdados das escolas ativas)
-        log_msg(str_glue("Base final gerada: {nrow(microdados_esc_ativ)} escolas ativas, {ncol(microdados_esc_ativ)} variáveis"))
+        log_msg(str_glue(
+          "Base final gerada: {nrow(microdados_esc_ativ)} escolas ativas, {ncol(microdados_esc_ativ)} variáveis"
+        ))
 
         ## Crie uma mensagem explicitando os possíveis erros
         return(list(status = "sucesso", dados = microdados_esc_ativ))
-        }, error = function(e) {
+      },
+      error = function(e) {
         log_msg(str_glue("Erro: {e$message}"), "ERRO")
-       
+
         if (tentativa < max_tentativas) {
-            espera <- 2^tentativa
-            log_msg(str_glue("Aguardando {espera}s antes da próxima tentativa"), "NOVA TENTATIVA")
-            Sys.sleep(espera)
+          espera <- 2^tentativa
+          log_msg(
+            str_glue("Aguardando {espera}s antes da próxima tentativa"),
+            "NOVA TENTATIVA"
+          )
+          Sys.sleep(espera)
         }
         return(list(status = "erro", mensagem = e$message))
-        })
-       
-        if (resultado$status == "sucesso") return(resultado$dados)
-    }
-   
-    ## Crie uma mensagem sobre eventuais falhas definitivas
-    log_msg("Falha após todas as tentativas", "FALHA")
-    return(NULL)
+      }
+    )
+
+    if (resultado$status == "sucesso") return(resultado$dados)
+  }
+
+  ## Crie uma mensagem sobre eventuais falhas definitivas
+  log_msg("Falha após todas as tentativas", "FALHA")
+  return(NULL)
 }
 ```
 
 ### Implementando a função para o acesso e tratamento dos dados
 
-Criada a função, basta aplicá-la ao conjunto de dados de interesse. O resultado esperado, neste caso, é a geração dos microdados das escolas ativas para cada um dos anos analisados.
+Criada a função, basta aplicá-la ao conjunto de dados de interesse.
+O resultado esperado, neste caso, é a geração dos microdados das escolas ativas para cada um dos anos analisados.
 
 ::: callout-note
 ## Lembrete
@@ -357,7 +451,8 @@ if (length(result_negat) > 0) {
 
 ### Mapeando as escolas ao longo dos anos
 
-A partir da base única criada (`base_unic_cens_edu_orig`), torna-se possível identificar a presença de cada escola ao longo do tempo. Tomando como exemplo o caso hipotético de uma escola presente em três anos distintos, o seu registro na base (associado as suas características) ocuparia três linhas, uma para cada ano.
+A partir da base única criada (`base_unic_cens_edu_orig`), torna-se possível identificar a presença de cada escola ao longo do tempo.
+Tomando como exemplo o caso hipotético de uma escola presente em três anos distintos, o seu registro na base (associado as suas características) ocuparia três linhas, uma para cada ano.
 
 Para facilitar a visualização desse quadro e sintetizar essas informações, três variáveis serão geradas:
 
@@ -392,7 +487,8 @@ base_unica_map_com_rep <- base_unic_cens_edu_orig |>
 glimpse(base_unica_map_com_rep)
 ```
 
-A seguir, busca-se evidenciar quais são as escolas presentes em mais de um censo educacional. Para isso, o cômputo considera todos os anos do censo analisados (essa definição foi feita no objeto `censo_esc_anos`).
+A seguir, busca-se evidenciar quais são as escolas presentes em mais de um censo educacional.
+Para isso, o cômputo considera todos os anos do censo analisados (essa definição foi feita no objeto `censo_esc_anos`).
 
 ```{r}
 #| label: crie_bases_especif_esc_+1_ano
@@ -461,17 +557,21 @@ for (i in seq_along(list_tab)) {
 
 Considerando os dados expostos, que tratam das escolas presentes em mais de um censo escolar, duas constatações podem ser feitas:
 
-1. A depender do ano de referência da base, os números variam para os casos em que uma escola está presente em dois censos ou três anos;
-2. Independentemente do ano de referência, o número de escolas presentes em todos os levantamentos é o mesmo (167499).
-
+1.  A depender do ano de referência da base, os números variam para os casos em que uma escola está presente em dois censos ou três anos;
+2.  Independentemente do ano de referência, o número de escolas presentes em todos os levantamentos é o mesmo (167499).
 
 ## Criando uma base única sem repetição de escolas
 
-Considerando o objetivo final do presente procedimento (disponibilizar o dado geoespacial mais qualificado e atualizado possível das escolas), passa-se à criação da primeira base sintética referente ao período abrangido. Diferentemente do que ocorre com a base geral produzida anteriormente (`base_unica_map_com_rep`), neste caso o conjunto de escolas presentes em todos os anos analisados não contará com repetições.
+Considerando o objetivo final do presente procedimento (disponibilizar o dado geoespacial mais qualificado e atualizado possível das escolas), passa-se à criação da primeira base sintética referente ao período abrangido.
+Diferentemente do que ocorre com a base geral produzida anteriormente (`base_unica_map_com_rep`), neste caso o conjunto de escolas presentes em todos os anos analisados não contará com repetições.
 
-Nesse sentido, é importante destacar a *necessidade de se assumir um ano de referência* para a geração dessa base. Afinal, a base única anterior abrange múltiplos anos e os dados da nova base proposta devem estar, em última instância, atrelados a um ano específico. 
+Nesse sentido, é importante destacar a *necessidade de se assumir um ano de referência* para a geração dessa base.
+Afinal, a base única anterior abrange múltiplos anos e os dados da nova base proposta devem estar, em última instância, atrelados a um ano específico.
 
-Do ponto de vista teórico, a fonte ideal seria a base mais atual. Isso porque, com o tempo as instituições produtoras de dados podem corrigir eventuais falhas, omissões e/ou prestar novos esclarecimentos sobre as possibilidade e as limitações de seus dados. Contudo, a análise empírica entre os anos dos censos escolares mostram que o dado sobre o logradouro (variável `endereco`) das escolas de 2025 muitas vezes encontra-se sem a denominação de seu tipo ("rua", "avenida", etc.). Esse fato, que é um fator limitante, atrelado à busca pelo dado mais atualizado, levou à escolha de 2024 como o ano de referência mais adequado para esta etapa.
+Do ponto de vista teórico, a fonte ideal seria a base mais atual.
+Isso porque, com o tempo as instituições produtoras de dados podem corrigir eventuais falhas, omissões e/ou prestar novos esclarecimentos sobre as possibilidade e as limitações de seus dados.
+Contudo, a análise empírica entre os anos dos censos escolares mostra que o dado sobre o logradouro (variável `endereco`) das escolas de 2025 muitas vezes encontra-se sem a denominação de seu tipo ("rua", "avenida", etc.).
+Esse fato, que é um fator limitante, atrelado à busca pelo dado mais atualizado, levou à escolha de 2024 como o ano de referência mais adequado para esta etapa.
 
 Definida a referência temporal, a seguir cria-se a base com todas as escolas presentes durante o período analisado, incluindo-se os casos presentes em apenas um ano.
 
@@ -489,7 +589,8 @@ glimpse(base_unica_map)
 
 A partir do exposto, é possível notar que a nova base conta com `r dim(base_unica_map)[1]` escolas.
 
-De forma a visualizar melhor os dados, a seguir são apresentados um gráfico e duas tabelas ilustrando a presença das escolas ao longo do tempo. Enquanto a primeira tabela indica a origem (ano) dos dados que foram selecionados para compor a base, a segunda evidencia a presença/permanência das escolas ao longo do tempo.
+De forma a visualizar melhor os dados, a seguir são apresentados um gráfico e duas tabelas ilustrando a presença das escolas ao longo do tempo.
+Enquanto a primeira tabela indica a origem (ano) dos dados que foram selecionados para compor a base, a segunda evidencia a presença/permanência das escolas ao longo do tempo.
 
 ```{r}
 #| label: crie_tab_base_unica_ref
@@ -519,7 +620,9 @@ base_unica_map_cnt_anos |>
     knitr::kable(col.names = c("Presença das escolas", "Anos", "Total de escolas", "Proporção (%)"), caption = "Presença das escolas ao longo dos censos escolares (contagem por ano)", align = "llcc")
 ```
 
-Como esperado, a maioria dos dados que compõem a base são de 2024, ano de referência adotado anteriormente. Por sua vez, a segunda tabela reforça alguns dados conhecidos, como a permanência de grande parte das escolas ao longo do período analisado (`base_unica_map_cnt_anos[1, "prop"]  |> pull()`), e revela os que estão presentes em apenas em um ano do período. Esse mesmo quadro é exposto no gráfico a seguir.
+Como esperado, a maioria dos dados que compõem a base são de 2024, ano de referência adotado anteriormente.
+Por sua vez, a segunda tabela reforça alguns dados conhecidos, como a permanência de grande parte das escolas ao longo do período analisado (`base_unica_map_cnt_anos[1, "prop"]  |> pull()`), e revela os que estão presentes em apenas em um ano do período.
+Esse mesmo quadro é exposto no gráfico a seguir.
 
 ```{r}
 #| label: crie_graf_base_unica_ref
@@ -583,7 +686,8 @@ base_unica_map_cnt_anos|>
         )
 ```
 
-A partir das tabelas, verifica-se que após a seleção de 2024 como ano referência, `r max(base_unica_map_cnt_ano_orig$prop)` (`r max(base_unica_map_cnt_ano_orig$tot_escolas)`) dos dados das escolas são provenientes dessa base. Por sua vez, ao analisarmos a presença das escolas ao longo do tempo, nota-se que `r max(base_unica_map_cnt_anos$prop)` (`r max(base_unica_map_cnt_anos$tot_escolas)`) estão presentes ao longo do período analisado, indicando uma estabilidade para o Brasil, como um todo. 
+A partir das tabelas, verifica-se que após a seleção de 2024 como ano referência, `r max(base_unica_map_cnt_ano_orig$prop)` (`r max(base_unica_map_cnt_ano_orig$tot_escolas)`) dos dados das escolas são provenientes dessa base.
+Por sua vez, ao analisarmos a presença das escolas ao longo do tempo, nota-se que `r max(base_unica_map_cnt_anos$prop)` (`r max(base_unica_map_cnt_anos$tot_escolas)`) estão presentes ao longo do período analisado, indicando uma estabilidade para o Brasil, como um todo.
 
 Os dados por estado, por sua vez, podem ser vistos a seguir.
 
@@ -640,25 +744,27 @@ base_unica_map_cnt_anos_uf |>
 
 Finalizada essa breve incursão exploratória, bem como a geração da base que será utilizada para a próxima etapa, a seguir passar-se-á à geocodificação.
 
-
 ## Geocodificação
 
 ### Acessando os dados do Catálogo de Escolas
 
-Até o momento, os dados que permitem uma maior precisão para a localização das escolas referem-se às variáveis de *logradouro* e seus respectivos *números*. Contudo, nem sempre esses dados serão suficientes ou adequados, uma vez que para algumas escolas ou eles não existem ou indicam a localização de forma mais genérica (Estrada X, Terra Índigena, Área rural, etc.). 
+Até o momento, os dados que permitem uma maior precisão para a localização das escolas referem-se às variáveis de *logradouro* e seus respectivos *números*.
+Contudo, nem sempre esses dados serão suficientes ou adequados, uma vez que para algumas escolas ou eles não existem ou indicam a localização de forma mais genérica (Estrada X, Terra Indígena, Área rural, etc.).
 
 Para lidar com essa situação, uma nova base será explorada, o [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas).
 
 #### Baixe o dado original ("Catálogo de Escolas") com a localização das escolas
 
-De forma complementar aos dados presentes nos microdados do [Censo Escolar](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar), outra fonte que será utilizada para o processo de geocodificação, como recém mencionado, é o [Catálogo de Escolas](https://anonymousdata.inep.gov.br/analytics/saw.dll?Portal&PortalPath=%2Fshared%2FCenso%20da%20Educa%C3%A7%C3%A3o%20B%C3%A1sica%2F_portal%2FCat%C3%A1logo%20de%20Escolas). Com os dados podendo ser acessados pelo site do [Inep Data](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas), essa base permite acessar um par de coordenadas geográficas associado a cada uma das escolas.
+De forma complementar aos dados presentes nos microdados do [Censo Escolar](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar), outra fonte que será utilizada para o processo de geocodificação, como recém mencionado, é o [Catálogo de Escolas](https://anonymousdata.inep.gov.br/analytics/saw.dll?Portal&PortalPath=%2Fshared%2FCenso%20da%20Educa%C3%A7%C3%A3o%20B%C3%A1sica%2F_portal%2FCat%C3%A1logo%20de%20Escolas).
+Com os dados podendo ser acessados pelo site do [Inep Data](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas), essa base permite acessar um par de coordenadas geográficas associado a cada uma das escolas.
 
-::: {.callout-important}
+::: callout-important
 ## Atenção!
 
 **Essa etapa não é feita de forma automática**
 
-Para baixar os dados, acesse a url do [Catálogo de Escolas](https://anonymousdata.inep.gov.br/analytics/saw.dll?Portal). Na página, **NÃO** selecione nenhuma variável e clique em "Aplicar".
+Para baixar os dados, acesse a url do [Catálogo de Escolas](https://anonymousdata.inep.gov.br/analytics/saw.dll?Portal).
+Na página, **NÃO** selecione nenhuma variável e clique em "Aplicar".
 
 O site gerará um relatório detalhado, apresentando o seguinte texto (19/02/26):\
 *" Foram selecionadas 212.386 escolas. São apresentadas 25 escolas por página do relatório.\
@@ -672,25 +778,181 @@ Salve-o com o nome "catalogo_escolas" na pasta de dados originais criada no come
 
 #### Importe os dados originais do Catálogo de Escolas
 
-A base do [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) é formada por um conjunto de variáveis. Nem todas, porém, fornecem insumos para a geocodificação. Tendo isso em vista, o processo de importação a seguir seleciona apenas as variáveis que atendem a esse propósito.
+A base do [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) é formada por um conjunto de variáveis.
+Nem todas, porém, fornecem insumos para a geocodificação.
+Tendo isso em vista, o processo de importação a seguir seleciona apenas as variáveis que atendem a esse propósito.
 
 ```{r}
 #| label: leia_catalogo_esc
 
 # Importe os dados do catálogo de escolas
-catalogo_escolas <- read_csv(file.path(pasta_dados_originais,
+catalogo_escolas <- read_csv(file.path(pasta_dados_originais, 
   "catalogo_escolas.csv"),
   locale = locale(
-  #   decimal_mark = ",",
-  #   grouping_mark = ".",
-    encoding = "UTF-8"),
-  col_select = all_of(c("Escola", "Código INEP", "Latitude", "Longitude")),
+  #   decimal_mark = ",", 
+  #   grouping_mark = ".", 
+    encoding = "UTF-8"), 
+  col_select = all_of(c("Escola", "Código INEP", "Endereço", "Latitude", "Longitude")),
   col_types = cols(
-    .default = col_character())) |>
+    # `Restrição de Atendimento` = col_character(),
+    Escola = col_character(),
+    `Código INEP` = col_character(),
+    # UF = col_character(),
+    # Município = col_character(),
+    # Localização = col_character(),
+    # `Localidade Diferenciada` = col_character(),
+    # `Categoria Administrativa` = col_character(),
+    Endereço = col_character(),
+    # Telefone = col_character(),
+    # `Dependência Administrativa` = col_character(),
+    # `Categoria Escola Privada` = col_character(),
+    # `Conveniada Poder Público` = col_character(),
+    # `Regulamentação pelo Conselho de Educação` = col_character(),
+    # `Porte da Escola` = col_character(),
+    # `Etapas e Modalidade de Ensino Oferecidas` = col_character(),
+    # `Outras Ofertas Educacionais` = col_character(),
+    Latitude = col_number(),
+    Longitude = col_number()
+    # .default = col_factor()
+  )) |> 
   clean_names()
 ```
 
 A partir da importação, é possível notar que o [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) possui `r nrow(catalogo_escolas)` escolas cadastradas.
+
+#### Analise a completude dos dados geográficos (para além dos NA)
+
+Com a base do [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) importada, passa-se a ter acesso a um novo dado: as coordenadas geográficas das escolas.
+
+Para entender um pouco melhor esse dado e sua viabilidade de uso, a seguir duas informações são checadas: i) se o formato do dado está de acordo com o esperado e ii) a quantidade/o peso dos dados ausentes na base (completude).
+
+```{r}
+#| label: analise_NA_catalogo_escolas 
+
+# Compute quais casos não seguem o padrão de escrita das coordenadas geográficas (excluindo-se os missing values)
+catalogo_escolas |>
+  summarise(
+    # Cheque o padrão da latitude
+    lat_invalidos = sum(
+      !is.na(latitude) &
+      !grepl("^-?\\d+[\\.,]\\d+$", latitude),
+      na.rm = TRUE),
+    # Cheque o padrão da longitude
+    lon_invalidos = sum(
+      !is.na(longitude) &
+      !grepl("^-?\\d+[\\.,]\\d+$", longitude),
+      na.rm = TRUE)) |> 
+    # Construa a tabela com os resultados    
+    knitr::kable(
+      col.names = c("Latitude - valores sem o padrão esperado", "Longitude - valores sem o padrão esperado"), 
+      align = "c",
+      caption = "Avaliando o padrão esperado dos valores de latitude e longitude")
+
+# Compute o total e a proporção de escolas sem dados de latitude
+tibble(# Total de NA
+      tot_na = sum(is.na(catalogo_escolas$latitude)),
+      # Proporção de NA
+      prop_na = scales::percent(sum(is.na(catalogo_escolas$latitude)) / length(catalogo_escolas$latitude), accuracy = 0.1)) |>
+      # Construção da tabela    
+      knitr::kable(
+          col.names = c("Total de valores faltantes (NA)", "Proporção de valores faltantes (NA)"), 
+          align = "c",
+          caption = "Avaliando os valores faltantes (NA) dos dados de latitude")
+
+# Compute o total e a proporção de escolas sem dados de longitude
+tibble(# Total de NA
+      tot_na = sum(is.na(catalogo_escolas$longitude)),
+      # Proporção de NA
+      prop_na = scales::percent(sum(is.na(catalogo_escolas$longitude)) / length(catalogo_escolas$longitude), accuracy = 0.1)) |>
+      # Construção da tabela    
+      knitr::kable(
+          col.names = c("Total de valores faltantes (NA)", "Proporção de valores faltantes (NA)"), 
+          align = "c",
+          caption = "Avaliando os valores faltantes (NA) dos dados de longitude")
+```
+
+De acordo com os dados, a base parece ser uma fonte interessante para complementar os dados de localização obtidos por meio dos microdados do Censo Escolar.
+
+#### Extração de dados de localização (caso da edição dos microdados do Censo Escolar de 2025)
+
+Os campos de Logradouro, Número, CEP e Bairro foram removidos da base de microdados do Censo Escolar de 2025.
+Com isso, usaremos um script para extrair esses dados do campo Endereço da base do Catálogo de Endereços.
+
+```{r}
+# Dicionário de Vias (Base Correios)
+# Listamos as versões completas (sem acento e com acento para garantir) e as abreviações
+tipos_logradouro <- c(
+  # Extensos
+  "RUA", "AVENIDA", "TRAVESSA", "ALAMEDA", "RODOVIA", "PRACA", "PRAÇA", 
+  "ESTRADA", "VILA", "BECO", "CAMINHO", "QUADRA", "SETOR", "CONDOMINIO", 
+  "CONDOMÍNIO", "CHACARA", "CHÁCARA", "FAZENDA", "SITIO", "SÍTIO", 
+  "VIELA", "VIA", "VIADUTO", "LOTEAMENTO", "PASSARELA", "LARGO", 
+  "BOULEVARD", "MARGINAL", "RESIDENCIAL", "PARQUE", "TRECHO", 
+  "GALERIA", "MORRO", "BLOCO", "RAMAL", "PASSAGEM", "AEROPORTO",
+  # Abreviados Comuns (o regex validará se eles possuem ponto ou não automaticamente)
+  "AV", "TRAV", "TV", "AL", "ROD", "PC", "PÇA", "PÇ", "ESTR", "EST", "VL", "BC", 
+  "CAM", "QD", "ST", "COND", "CH", "FAZ", "SIT", "VD", "LOT", "LG", "BLV", 
+  "RES", "PQ", "TR", "GL", "PAS"
+)
+
+# Montagem inteligente da Regex
+# Explicando a regra:
+# 1. \b garante que pegue a palavra inteira (não vai pegar o "AV" dentro de "GAVETA")
+# 2. paste(..., collapse = "|") junta todas as opções acima separadas por "ou" (|)
+# 3. \.? no final significa que a palavra pode ou não ser seguida de um ponto final
+# 4. Adicionamos explicitamente o \bR\. no final para tratar "R." (Rua abreviada) que é uma letra só.
+padrao_via <- paste0("(?i)(\\b(", paste(tipos_logradouro, collapse = "|"), ")\\b\\.?|\\bR\\.)")
+
+# 2. Algoritmo de Extração
+catalogo_escolas <- catalogo_escolas |>
+  mutate(
+    # Extração do CEP: busca o padrão exato de 5 dígitos + hífen + 3 dígitos
+    cep = str_extract(endereco, "\\d{5}-\\d{3}"),
+    
+    # Limpeza preparatória: remove o CEP, a cidade, e o estado (inclusive o ponto que vem antes do CEP)
+    end_limpo = str_trim(str_remove(endereco, "(\\. )?\\d{5}-\\d{3}.*$")),
+    
+    # Quebra a string ao meio usando a última VÍRGULA como âncora
+    
+    # Separando pela ÚLTIMA vírgula
+    # ".*(?=,)" captura tudo do início até a última vírgula que encontrar
+    antes_virgula = case_when(
+      str_detect(end_limpo, ",") ~ str_trim(str_extract(end_limpo, ".*(?=,)")),
+      TRUE ~ end_limpo # Prevenção caso não haja vírgula
+    ),
+    
+    depois_virgula = case_when(
+      str_detect(end_limpo, ",") ~ str_trim(str_extract(end_limpo, "[^,]+$")),
+      TRUE ~ end_limpo
+    ),
+    
+    # Extração do Número: captura a primeira sequência sem espaços após a vírgula
+    numero_bruto = str_extract(depois_virgula, "^[^\\s]+"),
+    # Validação: mantém apenas se for estritamente numérico
+    numero = ifelse(str_detect(numero_bruto, "^\\d+$"), numero_bruto, NA_character_),
+    
+    # Extração da Localidade (Bairro):
+    # Avalia os pontos APENAS na parte de trás da vírgula. Evita o falso positivo de "AV."
+    localidade = case_when(
+      str_detect(depois_virgula, "\\.") ~ str_trim(str_extract(depois_virgula, "[^\\.]+$")),
+      # Se não tem ponto depois da vírgula, o bairro é o texto que sobra após remover o número
+      TRUE ~ str_trim(str_remove(depois_virgula, "^[^\\s]+\\s+"))
+    ),
+    
+    # Extração do Logradouro:
+    logradouro = case_when(
+      # Trata exceções onde o logradouro real foi digitado DEPOIS da vírgula
+      str_detect(depois_virgula, padrao_via) & !str_detect(antes_virgula, padrao_via) ~ 
+        str_trim(str_extract(depois_virgula, paste0(padrao_via, ".*?(?=\\.|$)"))),
+      
+      # Se o logradouro estiver antes da vírgula, captura até o ponto final ou até o final da string
+      TRUE ~ antes_virgula
+    )
+  ) |>
+  
+  # 3. Selecionar e ordenar apenas as colunas solicitadas
+  select(codigo_inep, latitude, longitude, logradouro, numero, cep, localidade)
+```
 
 #### Renomeie, recodifique e selecione as variáveis de interesse (colunas)
 
@@ -705,21 +967,28 @@ catalogo_escolas_geo <- catalogo_escolas |>
     # Renomeie as variáveis
     cod_escola = codigo_inep,
     lat_inep = latitude,
-    long_inep = longitude
+    long_inep = longitude,
+    logradouro_ctlg = logradouro, 
+    num_endereco_ctlg = numero, 
+    cep_ctlg = cep, 
+    nm_bairro_ctlg = localidade
   ) |>
   mutate(
     # Remova os eventuais espaços extras das coord. geo.
     lat_inep = trimws(lat_inep),
     long_inep = trimws(long_inep)
   ) |>
-  select(cod_escola, lat_inep, long_inep)
+  select(cod_escola, lat_inep, long_inep, logradouro_ctlg,
+        num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg)
 
 glimpse(catalogo_escolas_geo)
 ```
 
 ### Integrando as coordenadas geográficas (Catálogo de Escolas) à base única gerada anteriormente (microdados do Censo Escolar)
 
-Com o acesso às coordenadas geográficas presentes no [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) devidamente formatadas, a seguir será realizada a junção dessa base com a dos microdados gerada anteriormente (`base_unica_map`). Note, também, que uma nova coluna é criada (`fonte_coord_geo`). O objetivo é registrar a fonte original do dado.
+Com o acesso às coordenadas geográficas presentes no [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) devidamente formatadas, a seguir será realizada a junção dessa base com a dos microdados gerada anteriormente (`base_unica_map`).
+Note, também, que uma nova coluna é criada (`fonte_coord_geo`).
+O objetivo é registrar a fonte original do dado.
 
 ```{r}
 #| label: crie_base_para_geocodificao
@@ -737,18 +1006,23 @@ escolas_geo |>
     knitr::kable(col.names = c("Fonte do dado", "Total de escolas"), align = 'lc')
 ```
 
-Realizada a integração entre as bases ("microdados" e "catalogo_escolas"), verifica-se que boa parte das escolas possuem coordenadas geográficas (`r round(((1 - mean(is.na(escolas_geo$lat_inep) | is.na(escolas_geo$long_inep))) * 100), 2)`). Ainda restam, contudo, `r round(mean(is.na(escolas_geo$lat_inep) | is.na(escolas_geo$long_inep)) * 100, 2)`% das escolas sem esse dado.
+Realizada a integração entre as bases ("microdados" e "catalogo_escolas"), verifica-se que boa parte das escolas possuem coordenadas geográficas (`r round(((1 - mean(is.na(escolas_geo$lat_inep) | is.na(escolas_geo$long_inep))) * 100), 2)`).
+Ainda restam, contudo, `r round(mean(is.na(escolas_geo$lat_inep) | is.na(escolas_geo$long_inep)) * 100, 2)`% das escolas sem esse dado.
 
 ### Prepare a base para a geocodificação (escolas sem coordenadas geográficas)
 
-Para lidar com a ausência de dados mais precisos sobre a dimensão espacial de algumas escolas, as coordenadas faltantes serão obtidas por meio do [geocodebr](https://github.com/ipeaGIT/geocodebr), pacote dispobilizado pelo [IPEA](https://www.ipea.gov.br/portal/).
+Para lidar com a ausência de dados mais precisos sobre a dimensão espacial de algumas escolas, as coordenadas faltantes serão obtidas por meio do [geocodebr](https://github.com/ipeaGIT/geocodebr), pacote disponibilizado pelo [IPEA](https://www.ipea.gov.br/portal/).
 
-Dois objetos serão, então, criados: `escolas_com_coord_geo` e `escolas_sem_coord_geo`. Enquanto o primeiro registra os casos que já possuem coordenadas geográficas, o segundo armazenará as escolas que não possuem esses dados.
+Dois objetos serão, então, criados: `escolas_com_coord_geo` e `escolas_sem_coord_geo`.
+Enquanto o primeiro registra os casos que já possuem coordenadas geográficas, o segundo armazenará as escolas que não possuem esses dados.
 
-::: {.callout-important}
+::: callout-important
 ## Atenção!
 
-As coordenadas geradas via *geocodebr* são estimativas obtidas a partir das informações textuais de endereço. Nesse sentido, é importante frisar que a precisão espacial obtida está diretamente relacionada ao nível de detalhamento e qualidade dessa informação (logradouro, número, CEP, etc.). A depender do caso, ela pode variar da localização aproximada do imóvel ao centróide de áreas mais amplas, como as abrangidas pelo CEP ou município. Portanto, as coordenadas geográficas assim estimadas devem ser utilizadas com cautela, especialmente em análises espaciais de grande detalhamento.
+As coordenadas geradas via *geocodebr* são estimativas obtidas a partir das informações textuais de endereço.
+Nesse sentido, é importante frisar que a precisão espacial obtida está diretamente relacionada ao nível de detalhamento e qualidade dessa informação (logradouro, número, CEP, etc.).
+A depender do caso, ela pode variar da localização aproximada do imóvel ao centróide de áreas mais amplas, como as abrangidas pelo CEP ou município.
+Portanto, as coordenadas geográficas assim estimadas devem ser utilizadas com cautela, especialmente em análises espaciais de grande detalhamento.
 :::
 
 ```{r}
@@ -762,13 +1036,32 @@ escolas_com_coord_geo <- escolas_geo |>
 escolas_sem_coord_geo <- escolas_geo |>
   filter(is.na(lat_inep) | is.na(long_inep)) |>
   select(!c(lat_inep, long_inep))
+
+# Para as escolas sem dados de endereço nos microdados (caso de 2025), atribua os dados do catálogo de escolas
+escolas_com_coord_geo <- escolas_geo |>
+  filter(!is.na(lat_inep) & !is.na(long_inep)) |>
+  mutate(bairro = ifelse(is.na(bairro), nm_bairro_ctlg, bairro),
+         endereco = ifelse(is.na(endereco), logradouro_ctlg, endereco),
+         numero = ifelse(is.na(numero), num_endereco_ctlg, numero),
+         cep = ifelse(is.na(cep), cep_ctlg, cep)) |> 
+  select(!c(logradouro_ctlg, num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg))
+
+escolas_sem_coord_geo <- escolas_sem_coord_geo |>
+  mutate(bairro = ifelse(is.na(bairro), nm_bairro_ctlg, bairro),
+         endereco = ifelse(is.na(endereco), logradouro_ctlg, endereco),
+         numero = ifelse(is.na(numero), num_endereco_ctlg, numero),
+         cep = ifelse(is.na(cep), cep_ctlg, cep)) |> 
+  select(!c(logradouro_ctlg, num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg))
 ```
 
 #### Geocodifique com o Geocodebr
 
-Identificado o conjunto de escolas sem coordenadas geográficas, a seguir o procedimento de geocodificação será realizado. É importante lembrar, porém, que a base gerada até o momento contém dados de diferentes anos. Tal escolha, longe de ser fortuita, está relacionada à busca pela melhor localização possível das escolas. 
+Identificado o conjunto de escolas sem coordenadas geográficas, a seguir o procedimento de geocodificação será realizado.
+É importante lembrar, porém, que a base gerada até o momento contém dados de diferentes anos.
+Tal escolha, longe de ser fortuita, está relacionada à busca pela melhor localização possível das escolas.
 
-Tendo esse objetivo em vista, propõe-se um procedimento de compatibilização entre os anos. A ideia consiste, basicamente, em geocodificar os endereços de todos os anos, compará-los e selecionar aqueles que apresentam os melhores resultados.
+Tendo esse objetivo em vista, propõe-se um procedimento de compatibilização entre os anos.
+A ideia consiste, basicamente, em geocodificar os endereços de todos os anos, compará-los e selecionar aqueles que apresentam os melhores resultados.
 
 Nesse sentido, inicialmente criam-se objetos com i) os códigos das escolas sem coordenadas geográficas e ii) as variáveis que auxiliarão o algoritmo de geocodificação.
 
@@ -776,7 +1069,7 @@ Nesse sentido, inicialmente criam-se objetos com i) os códigos das escolas sem 
 #| label: crie_var_aux_geocod
 
 # Selecione as variáveis que serão utilizadas na geocodificação 
-sel_var_geocod <- c("ano_cn_escolar", "cod_escola", "sg_uf", "nm_mun", "endereco", "num_endereco", "cep", "nm_bairro", "ano_censos_pres")
+sel_var_geocod <- c("ano_cn_escolar", "cod_escola", "sg_uf", "cod_mun", "endereco", "numero", "cep", "bairro", "ano_censos_pres")
 
 # Obtenha o código das escolas que não possuem coordenadas geográficas
 sel_esc_sem_coordgeo <- escolas_sem_coord_geo |>
@@ -786,15 +1079,57 @@ sel_esc_sem_coordgeo <- escolas_sem_coord_geo |>
 length(sel_esc_sem_coordgeo)
 ```
 
-O próximo passo diz respeito à geração, de fato, das coordenadas geográficas para o conjunto de escolas que ainda não possui esses dados. Baseando-se no endereço registrado na base, um procedimento geral é proposto para implementar a geocodificação por ano (usa-se um *for loop* para isso).
+O próximo passo diz respeito à geração, de fato, das coordenadas geográficas para o conjunto de escolas que ainda não possui esses dados.
+Baseando-se no endereço registrado na base, um procedimento geral é proposto para implementar a geocodificação por ano (usa-se um *for loop* para isso).
 
-O primeiro passo diz respeito à geração de uma lista vazia (`resultados_geocod`). Funcionando como insumo para as próximas etapas, o objetivo dessa lista é armazenar os resultados que serão produzidos pela geocodificação para cada um dos anos.
+#### Geocodifique com o Geocodebr
 
-Em seguida, passa-se à estruturação da base. Mais especificamente, serão selecionadas as escolas e as variáveis de interesse (salvos no objeto `base_esc_geocod_orig`). 
+Feita a seleção das escolas sem coordenadas geográficas, o próximo passo consiste em obtê-las.
 
-Com a base estruturada, o algoritimo de geocodificação pode ser implementado. Para isso, inicialmente serão definidos os parâmetros requeridos pelo algoritmo (`campos`). Vencido esse passo, executa-se a função *geocode()* do pacote [Geocodebr](https://github.com/ipeaGIT/geocodebr). Note: de forma a explicitar uma exigência do algoritmo, o código a seguir inicia assegurando que todas as variáveis estão codificadas como `character`.
+Para confirmar que o diretório temporário utilizado pelo pacote geocodebr está acessível e com permissão de escrita, execute o script abaixo.
 
-Finalizada a geocodificação, um novo conjunto de variáveis é gerado e acrescentado à base de entrada utilizada (`escolas_geocod`). De forma resumida, essas novas variáveis podem ser subdivididas em dois grupos: i) informações descritivas sobre a localização e ii) qualidade dos dados obtidos. Para o procedimento proposto, apenas algumas dessas variáveis serão retidas.
+```{r}
+#| label: def_duckdb_temp_folder
+
+# 1. Verifica qual é o sistema operacional
+is_windows <- .Platform$OS.type == "windows"
+
+# 2. Define o caminho da pasta dependendo do sistema
+if (is_windows) {
+    # No Windows, usamos a pasta raiz do usuário para evitar bloqueios de administrador
+    # e forçamos o uso de barras normais "/" para não confundir o DuckDB
+    dir_base <- file.path(Sys.getenv("USERPROFILE"), "duckdb_cache")
+    dir_duckdb <- normalizePath(dir_base, winslash = "/", mustWork = FALSE)
+
+} else {
+# No Linux/Mac (unix), o diretório temporário padrão do R não tem problemas de path
+    dir_duckdb <- file.path(tempdir(), "duckdb_cache")
+}
+
+# 3. Cria a pasta com segurança (recursive = TRUE garante a criação de subpastas se necessário)
+if (!dir.exists(dir_duckdb)) {
+    dir.create(dir_duckdb, recursive = TRUE)
+}
+
+# 4. Aplica as variáveis de ambiente
+Sys.setenv(DUCKDB_R_TEMP_DIRECTORY = dir_duckdb)
+Sys.setenv(DUCKDB_EXTENSION_DIRECTORY = dir_duckdb)
+```
+
+O segundo passo diz respeito à geração de uma lista vazia (`resultados_geocod`).
+Funcionando como insumo para as próximas etapas, o objetivo dessa lista é armazenar os resultados que serão produzidos pela geocodificação para cada um dos anos.
+
+Em seguida, passa-se à estruturação da base.
+Mais especificamente, serão selecionadas as escolas e as variáveis de interesse (salvos no objeto `base_esc_geocod_orig`).
+
+Com a base estruturada, o algoritmo de geocodificação pode ser implementado.
+Para isso, inicialmente serão definidos os parâmetros requeridos pelo algoritmo (`campos`).
+Vencido esse passo, executa-se a função *geocode()* do pacote [Geocodebr](https://github.com/ipeaGIT/geocodebr).
+Note: de forma a explicitar uma exigência do algoritmo, o código a seguir inicia assegurando que todas as variáveis estão codificadas como `character`.
+
+Finalizada a geocodificação, um novo conjunto de variáveis é gerado e acrescentado à base de entrada utilizada (`escolas_geocod`).
+De forma resumida, essas novas variáveis podem ser subdivididas em dois grupos: i) informações descritivas sobre a localização e ii) qualidade dos dados obtidos.
+Para o procedimento proposto, apenas algumas dessas variáveis serão retidas.
 
 Por fim, o procedimento renomeia algumas variáveis (indicando o seu ano de origem) e salva os resultados na lista (inicialmente) vazia.
 
@@ -808,16 +1143,22 @@ for(ano in censo_esc_anos) {
   # Crie a base anual a ser geocodificada
   base_esc_geocod_orig <- base_unica_map_com_rep |>
     filter(cod_escola %in% sel_esc_sem_coordgeo & ano_cn_escolar == ano) |>
+    select(-c("cep", "endereco", "numero", "bairro")) |>
+    left_join(
+      escolas_sem_coord_geo |>
+        select("cod_escola", "bairro", "endereco", "numero", "cep"),
+      by = "cod_escola"
+    ) |>
     select(all_of(sel_var_geocod))
 
   # Defina os campos que serão utilizados para a geocodificação
   campos <- definir_campos(
     estado = "sg_uf",
-    municipio = "nm_mun",
+    municipio = "cod_mun",
     logradouro = "endereco",
-    numero = "num_endereco",
+    numero = "numero",
     cep = "cep",
-    localidade = "nm_bairro")
+    localidade = "bairro")
 
   # Transforme a classe das variáveis (exigência do algoritmo)
   base_esc_geocod <- base_esc_geocod_orig |>
@@ -834,11 +1175,11 @@ for(ano in censo_esc_anos) {
 
   # Selecione apenas as variáveis de interesse
   escolas_geocod <- escolas_geocod |>
-    select(sg_uf, nm_mun, cod_escola, lat, lon, precisao, desvio_metros, tipo_resultado, ano_censos_pres)
+    select(sg_uf, cod_mun, cod_escola, lat, lon, precisao, desvio_metros, tipo_resultado, ano_censos_pres)
 
   # Renomeie as colunas (exceto as variáveis que permanecerão as mesmas), acrescentando o ano
   ## Crie objetos auxiliares para identificar quais variáveis serão alteradas
-  var_perm <- c("sg_uf", "nm_mun", "cod_escola")
+  var_perm <- c("sg_uf", "cod_mun", "cod_escola")
   outras_var <- setdiff(names(escolas_geocod), var_perm)
   novos_nomes_var <- str_c(outras_var, "_", ano)
  
@@ -857,18 +1198,21 @@ summary(resultados_geocod)
 str(resultados_geocod)
 ```
 
-Antes dos comentários sobre a geocodificação, mencione-se que as mensagens de atenção (*warning messages*) geradas estão apenas alertando para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo. Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
+Antes dos comentários sobre a geocodificação, mencione-se que as mensagens de atenção (*warning messages*) geradas estão apenas alertando para a impossibilidade de converter alguns números para o formato *integer*, padrão de representação utilizado pelo algoritmo.
+Sempre que isso ocorre, o algoritmo substitui esse valor por um valor faltante (NA).
 
-Isso posto, observa-se que a lista criada (`resultados_geocod`) apresenta os dados geocodificados para cada um dos `r length(censo_esc_anos)` anos analisados. Essa forma de visualização, porém, é de difícil compreensão.
+Isso posto, observa-se que a lista criada (`resultados_geocod`) apresenta os dados geocodificados para cada um dos `r length(censo_esc_anos)` anos analisados.
+Essa forma de visualização, porém, é de difícil compreensão.
 
-Diante deste fato e do resultado que se quer obter, a seguir a lista será transformada em uma única estrutura tabular (`escolas_geocod_tds_anos`). A partir dos sufixos das variáveis, que indicam o ano de origem do dado para cada uma das escolas, comparações serão mais facilmente realizáveis.  
+Diante deste fato e do resultado que se quer obter, a seguir a lista será transformada em uma única estrutura tabular (`escolas_geocod_tds_anos`).
+A partir dos sufixos das variáveis, que indicam o ano de origem do dado para cada uma das escolas, comparações serão mais facilmente realizáveis.
 
 ```{r}
 #| label: transf_dados_geocod_tab
 
-# Transforme a lista com os resultados da geocoficação em uma única base tabular
+# Transforme a lista com os resultados da geocodificação em uma única base tabular
 escolas_geocod_tds_anos <- resultados_geocod |>
-  reduce(full_join, by = c("sg_uf", "nm_mun", "cod_escola"))
+  reduce(full_join, by = c("sg_uf", "cod_mun", "cod_escola"))
 
 # Veja os dados para as primeiras escolas da base única
 escolas_geocod_tds_anos |>
@@ -876,7 +1220,9 @@ escolas_geocod_tds_anos |>
   knitr::kable()
 ```
 
-A partir da geocodificação e da criação de uma base única para armazenar esses dados, é possível verificar que o procedimento gerou dados para `r dim(escolas_geocod_tds_anos)[1]` escolas. Esse número, contudo, é ligeiramente maior do que a base de entrada (`escolas_sem_coord_geo`), que possui `r dim(escolas_sem_coord_geo)[1]` escolas. Isso ocorre, pois no processo de geocodificação ocorreu a duplicação de algumas escolas, expostas a seguir.
+A partir da geocodificação e da criação de uma base única para armazenar esses dados, é possível verificar que o procedimento gerou dados para `r dim(escolas_geocod_tds_anos)[1]` escolas.
+Esse número, contudo, é ligeiramente maior do que a base de entrada (`escolas_sem_coord_geo`), que possui `r dim(escolas_sem_coord_geo)[1]` escolas.
+Isso ocorre, pois no processo de geocodificação ocorreu a duplicação de algumas escolas, expostas a seguir.
 
 ```{r}
 #| label: ident_esc_geocod_duplicadas
@@ -884,7 +1230,7 @@ A partir da geocodificação e da criação de uma base única para armazenar es
 # Crie um vetor para selecionar os casos duplicados
 sel_esc_geocod_dupli <- duplicated(escolas_geocod_tds_anos$cod_escola) 
 
-# Quantique os casos duplicados
+# Quantifique os casos duplicados
 sum(sel_esc_geocod_dupli)
 
 # Selecione e apresente os 10 casos aleatórios de escolas duplicadas
@@ -894,7 +1240,8 @@ escolas_geocod_tds_anos |>
   kable()
 ```
 
-Uma vez que não deve haver duplicação na base das escolas geocodificadas, o próximo trecho eliminará esses casos. Em linhas gerais, a estratégia adotada consiste em:
+Uma vez que não deve haver duplicação na base das escolas geocodificadas, o próximo trecho eliminará esses casos.
+Em linhas gerais, a estratégia adotada consiste em:
 
 - Agrupar as escolas a partir dos seus códigos de identificação - dessa forma, a duplicação será reconhecida;
 - Identificar, para cada grupo de escolas, o menor desvio produzido no momento da geocodificação (o valor será salvo em uma variável auxiliar);
@@ -906,22 +1253,22 @@ Uma vez que não deve haver duplicação na base das escolas geocodificadas, o p
 
 escolas_geocod_tds_anos <- escolas_geocod_tds_anos |> 
   # Agrupe os casos por código de escola
-  group_by(cod_escola) %>%
+  group_by(cod_escola) |>
   
   # Identifique, em cada grupo, o menor desvio gerado pela geocodificação
-  mutate(menor_desvio_da_linha = pmin(desvio_metros_2022,desvio_metros_2023, desvio_metros_2024, desvio_metros_2025, na.rm = TRUE)) %>%
+  mutate(menor_desvio_da_linha = pmin(desvio_metros_2022,desvio_metros_2023, desvio_metros_2024, desvio_metros_2025, na.rm = TRUE)) |>
   
-  # Compare, identifique os evetuais valores ausentes (NA) das variáveis da base e replique os valores para cima e para baixo dentro do mesmo código de escola
-  fill(everything(), .direction = "downup") %>%
+  # Compare, identifique os eventuais valores ausentes (NA) das variáveis da base e replique os valores para cima e para baixo dentro do mesmo código de escola
+  fill(everything(), .direction = "downup") |>
   
-  # Rearrange a base considerando o menor valor do desvio por código de escola
-  arrange(menor_desvio_da_linha) %>%
+  # Rearranje a base considerando o menor valor do desvio por código de escola
+  arrange(menor_desvio_da_linha) |>
 
   # Remova a coluna auxiliar utilizada para identificar o menor desvio da geocodif. 
-  select(-menor_desvio_da_linha) %>%
+  select(-menor_desvio_da_linha) |>
 
   # Selecione apenas a escola com o menor desvio global do mesmo código 
-  distinct(cod_escola, .keep_all = TRUE) %>%
+  distinct(cod_escola, .keep_all = TRUE) |>
 
   # Desfaça os grupos criados  
   ungroup()
@@ -945,12 +1292,16 @@ escolas_geocod_tds_anos |>
   count(ano_censos_pres, sort = T, name = "tot_esc") |> 
   mutate(prop = scales::percent(tot_esc/sum(tot_esc), accuracy = 0.1)) |> 
   janitor::adorn_totals() |> 
-  knitr::kable(col.names = c("Presença nos censos (ano)", "Total de escolas", "Propoção (%)"), align = 'lcc')
+  knitr::kable(col.names = c("Presença nos censos (ano)", "Total de escolas", "Proporção (%)"), align = 'lcc')
 ```
 
-Como demonstra a estrutura da base, com exceção das variáveis relacionadas à unidade federativa (`sg_uf`), ao nome do município (`nm_mun`) e ao código de identificação único da escola (`cod_escola`), para todas as outras existem uma versão relacionada a cada ano do censo analisado (lat_2023, lon_2023, precisao_2023, etc.). No caso específico das coordenadas geográficas, deve-se ter apenas um par de referência - em tese, o de maior acurácia.
+Como demonstra a estrutura da base, com exceção das variáveis relacionadas à unidade federativa (`sg_uf`), ao código do município (`cod_mun`) e ao código de identificação único da escola (`cod_escola`), para todas as outras existem uma versão relacionada a cada ano do censo analisado (lat_2023, lon_2023, precisao_2023, etc.).
+No caso específico das coordenadas geográficas, deve-se ter apenas um par de referência - em tese, o de maior acurácia.
 
-Nesse sentido, baseando-se no *menor valor de desvio da localização da escola* e na busca pelo *dado mais recente possível*, as próximas linhas do código selecionarão o caso (escola) com as melhores coordenadas. Apenas para exemplificar o exposto, se o desvio constatado para uma escola for de 6 metros, em 2023, e de 36 metros, em 2024, o par de coordenadas selecionado seria o do primeiro ano (2023). Por sua vez, se o desvio encontrado para ambos os anos for o mesmo, as coordenadas recuperadas estariam atreladas ao ano de 2024 (mais recente e adequado possível). Por fim, para fins de registro e análise, o histórico dos dados constará na base gerada.
+Nesse sentido, baseando-se no *menor valor de desvio da localização da escola* e na busca pelo *dado mais recente possível*, as próximas linhas do código selecionarão o caso (escola) com as melhores coordenadas.
+Apenas para exemplificar o exposto, se o desvio constatado para uma escola for de 6 metros, em 2023, e de 36 metros, em 2024, o par de coordenadas selecionado seria o do primeiro ano (2023).
+Por sua vez, se o desvio encontrado para ambos os anos for o mesmo, as coordenadas recuperadas estariam atreladas ao ano de 2024 (mais recente e adequado possível).
+Por fim, para fins de registro e análise, o histórico dos dados constará na base gerada.
 
 ```{r}
 #| label: def_coord_geo_escolas_geocod_tds_anos
@@ -966,8 +1317,8 @@ escolas_geocod_long <- escolas_geocod_tds_anos |>
 
 # Selecione a escola com o menor desvio
 escolas_geocod_melhor_ano <- escolas_geocod_long |> 
-  group_by(cod_escola, sg_uf, nm_mun) |>
-  arrange(cod_escola, sg_uf, nm_mun, desvio_metros, desc(ano), .by_group = T) |> 
+  group_by(cod_escola, sg_uf, cod_mun) |>
+  arrange(cod_escola, sg_uf, cod_mun, desvio_metros, desc(ano), .by_group = T) |> 
   slice_head(n = 1) |>
   ungroup() |>
   rename(melhor_ano = ano,
@@ -976,14 +1327,14 @@ escolas_geocod_melhor_ano <- escolas_geocod_long |>
          melhor_longitude = lon,
          melhor_precisao = precisao)
 
-# Adicione todas as variávies para análise histórica
+# Adicione todas as variáveis para análise histórica
 escolas_geocod_compatib <- escolas_geocod_tds_anos |>
   left_join(escolas_geocod_melhor_ano) |> 
   relocate(.after = cod_escola, starts_with("melhor"))
 
 ```
 
-A seguir, apresentam-se dois gráficos referentes à qualidade dos dados gerados, o primeiro para o Brasil, como um todo, e o segundo para as unidades de federativas (estados).
+A seguir, apresentam-se dois gráficos referentes à qualidade dos dados gerados, o primeiro para o Brasil, como um todo, e o segundo para as unidades federativas (estados).
 
 ```{r}
 #| label: gere_grafico_qual_geocodebr
@@ -1070,14 +1421,14 @@ Para a criação de uma base onde todas as escolas terão um par de coordenadas 
 ```{r}
 #| label: sel_var_base_geocod
 
-# Selecione o padrão de exclusão que será utilizado para excluri as colunas a seguir - neste caso, todas as variáveis que terminem com os seus respectivos anos
+# Selecione o padrão de exclusão que será utilizado para excluir as colunas a seguir - neste caso, todas as variáveis que terminem com os seus respectivos anos
 colunas_excluir <- "\\d{4}$"
 
 # Exclua e adicione colunas de interesse e registre a fonte do dado
 escolas_geocod_compatib <- escolas_geocod_compatib |>
   select(-any_of(matches(colunas_excluir))) |>
   mutate(fonte_coord_geo = "geocodebr")  |> 
-  left_join(base_unica_map_com_rep, join_by(sg_uf, nm_mun, cod_escola, melhor_ano == ano_cn_escolar)) 
+  left_join(base_unica_map_com_rep, join_by(sg_uf, cod_mun, cod_escola, melhor_ano == ano_cn_escolar)) 
 ```
 
 O próximo passo consiste em integrar ambas as bases com coordenadas geográficas (`escolas_com_coord_geo` e `escolas_geocod_compatib`).
@@ -1090,7 +1441,10 @@ escolas_geo_tot <- escolas_com_coord_geo |>
   bind_rows(escolas_geocod_compatib)
 ```
 
-Com a base única gerada ("escolas_geo_tot"), algumas transformações iniciais serão realizadas. Atreladas à organização das variáveis já existentes, as primeiras dizem respeito à criação de um campo único para armazenar as coordenadas geográficas - neste momento, verifica-se a existência das coordenadas geográficas provenientes do [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) ("lat_inep" e "long_inep") e as geradas pela geocodificação ("melhor_latitude" e "melhor_longitude") - tratamento similar é realizado para o ano. Por sua vez, o outro grupo de modificações diz respeito ao ajuste da classe de algumas variáveis e a renomeação de algumas variáveis. Por fim, define-se um novo ordenamento para as variáveis e os casos. 
+Com a base única gerada ("escolas_geo_tot"), algumas transformações iniciais serão realizadas.
+Atreladas à organização das variáveis já existentes, as primeiras dizem respeito à criação de um campo único para armazenar as coordenadas geográficas - neste momento, verifica-se a existência das coordenadas geográficas provenientes do [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas) ("lat_inep" e "long_inep") e as geradas pela geocodificação ("melhor_latitude" e "melhor_longitude") - tratamento similar é realizado para o ano.
+Por sua vez, o outro grupo de modificações diz respeito ao ajuste da classe de algumas variáveis e a renomeação de algumas variáveis.
+Por fim, define-se um novo ordenamento para as variáveis e os casos.
 
 ```{r}
 #| label: ajuste_base_unica_geo
@@ -1102,21 +1456,23 @@ escolas_geo_tot <- escolas_geo_tot |>
     lon = if_else(!is.na(long_inep), as.numeric(long_inep), melhor_longitude),
     fonte_ano_cn_escolar = if_else(!is.na(melhor_ano), melhor_ano, ano_cn_escolar),
     # Modifique a classe de algumas variáveis
-    across(c(fonte_ano_cn_escolar, tp_adm, sg_uf, cod_mun, nm_mun, fonte_coord_geo), as.factor)) |>
+    across(c(fonte_ano_cn_escolar, tp_adm, sg_uf, cod_mun, fonte_coord_geo), as.factor)) |>
   select(!c(lat_inep, long_inep, melhor_ano, melhor_latitude, melhor_longitude, ano_cn_escolar)) |>
   # drop_na(c(lat, lon)) |>
   rename(
     precisao = melhor_precisao, 
     desvio = melhor_desvio
     ) |> 
-  relocate(cod_escola, nm_escola, lat, lon, precisao, desvio, fonte_coord_geo, fonte_ano_cn_escolar, tp_adm, qt_mat_bas, sg_uf, nm_mun, cod_mun, cep, endereco, num_endereco, nm_bairro) |> 
+  relocate(cod_escola, nm_escola, lat, lon, precisao, desvio, fonte_coord_geo, fonte_ano_cn_escolar, tp_adm, qt_mat_bas, sg_uf, cod_mun, cep, endereco, numero, bairro) |> 
   arrange(cod_escola)
 
 escolas_geo_tot |>
   glimpse()
 ```
 
-Realizadas esses primeiros ajustes, uma nova forma de registrar a presença das escolas ao longo do tempo é feita. Para isso, são criadas variáveis específicas para cada um dos anos dos censos analisados. Essas variáveis, por sua vez, indicarão a presença ("TRUE") ou ausência (FALSE) da escola naquele ano.
+Realizados esses primeiros ajustes, uma nova forma de registrar a presença das escolas ao longo do tempo é feita.
+Para isso, são criadas variáveis específicas para cada um dos anos dos censos analisados.
+Essas variáveis, por sua vez, indicarão a presença ("TRUE") ou ausência (FALSE) da escola naquele ano.
 
 ```{r}
 #| label: ident_ano_bool
@@ -1155,7 +1511,9 @@ escolas_geo_tot |>
 
 Após a união/junção e organização dos dados do [Censo Escolar](https://www.gov.br/inep/pt-br/areas-de-atuacao/pesquisas-estatisticas-e-indicadores/censo-escolar) e do [Catálogo de Escolas](https://www.gov.br/inep/pt-br/acesso-a-informacao/dados-abertos/inep-data/catalogo-de-escolas), uma primeira versão da base única já pode ser exportada em três formatos distintos: "csv", "parquet" e "rds".
 
-Para isso, a seguir serão criadas duas estratégias para a exportação. Na primeira, a base será única, com colunas específicas para cada um dos anos indicando a presença (`TRUE`) ou a ausência (`FALSE`) da escola naquele ano. Ou seja, o filtro é realizado por colunas específicas para cada ano do censo.
+Para isso, a seguir serão criadas duas estratégias para a exportação.
+Na primeira, a base será única, com colunas específicas para cada um dos anos indicando a presença (`TRUE`) ou a ausência (`FALSE`) da escola naquele ano.
+Ou seja, o filtro é realizado por colunas específicas para cada ano do censo.
 
 ```{r}
 #| label: exportacao_base_unica_sem_dim_esp
@@ -1163,8 +1521,8 @@ Para isso, a seguir serão criadas duas estratégias para a exportação. Na pri
 # Exporte a base gerada no formato .csv
 write_csv(escolas_geo_tot, file.path(pasta_dados_processados, str_c("escolas_geo_hist.csv")))
 
-# Exporte a base gerada no formato .csv
-write_parquet(escolas_geo_tot, file.path(pasta_dados_processados, str_c("escolas_geo_hist.parquet")))
+# Exporte a base gerada no formato .parquet
+# write_parquet(escolas_geo_tot, file.path(pasta_dados_processados, str_c("escolas_geo_hist.parquet")))
 
 # Exporte a base no formato .rds, nativo do R.
 saveRDS(
@@ -1172,7 +1530,8 @@ saveRDS(
   file.path(pasta_dados_processados, str_c("escolas_geo_hist.rds")))
 ```
 
-Note que, ainda que apresente as coordenadas geográficas para todas as escolas, a base recém-exportada não é um objeto espacial. Para isso, ela precisa ser transformada, como será feito a seguir.
+Note que, ainda que apresente as coordenadas geográficas para todas as escolas, a base recém-exportada não é um objeto espacial.
+Para isso, ela precisa ser transformada, como será feito a seguir.
 
 ```{r}
 #| label: transf_base_unica_geo
@@ -1204,5 +1563,7 @@ st_write(
     pasta_dados_processados,
     str_c("escolas_geo_hist.gpkg")),
   append = FALSE)
-``` 
 
+# Exporte o objeto espacial criado como .parquet
+st_write_parquet(escolas_tot_geo, dsn = file.path(pasta_dados_processados, str_c("escolas_geo_hist.parquet")))
+```
