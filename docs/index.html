@@ -4132,7 +4132,7 @@ vertical-align: -.125em;
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">August 27, 2026</p>
+      <p class="date-modified">August 31, 2026</p>
     </div>
   </div>
     
@@ -4451,10 +4451,10 @@ vertical-align: -.125em;
 <span id="cb4-223"><a href="#cb4-223" aria-hidden="true" tabindex="-1"></a>          <span class="fu">rename</span>(</span>
 <span id="cb4-224"><a href="#cb4-224" aria-hidden="true" tabindex="-1"></a>            <span class="at">ano_cn_escolar =</span> nu_ano_censo,</span>
 <span id="cb4-225"><a href="#cb4-225" aria-hidden="true" tabindex="-1"></a>            <span class="at">nm_mun =</span> no_municipio,</span>
-<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>            <span class="at">cod_mun =</span> co_municipio,</span>
+<span id="cb4-226"><a href="#cb4-226" aria-hidden="true" tabindex="-1"></a>            <span class="at">cd_mun =</span> co_municipio,</span>
 <span id="cb4-227"><a href="#cb4-227" aria-hidden="true" tabindex="-1"></a>            <span class="at">nm_escola =</span> no_entidade,</span>
 <span id="cb4-228"><a href="#cb4-228" aria-hidden="true" tabindex="-1"></a>            <span class="at">cod_escola =</span> co_entidade,</span>
-<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a>            <span class="at">tp_adm =</span> tp_dependencia</span>
+<span id="cb4-229"><a href="#cb4-229" aria-hidden="true" tabindex="-1"></a>            <span class="at">tp_dependencia =</span> tp_dependencia</span>
 <span id="cb4-230"><a href="#cb4-230" aria-hidden="true" tabindex="-1"></a>          )</span>
 <span id="cb4-231"><a href="#cb4-231" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-232"><a href="#cb4-232" aria-hidden="true" tabindex="-1"></a>        <span class="co">#Renomeia as variáveis de endereço para o padrão utilizado na plataforma GeoReDUS, exceto para o ano de 2025</span></span>
@@ -4463,8 +4463,8 @@ vertical-align: -.125em;
 <span id="cb4-235"><a href="#cb4-235" aria-hidden="true" tabindex="-1"></a>            <span class="fu">rename</span>(</span>
 <span id="cb4-236"><a href="#cb4-236" aria-hidden="true" tabindex="-1"></a>              <span class="at">cep =</span> co_cep,</span>
 <span id="cb4-237"><a href="#cb4-237" aria-hidden="true" tabindex="-1"></a>              <span class="at">endereco =</span> ds_endereco,</span>
-<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a>              <span class="at">numero =</span> nu_endereco,</span>
-<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a>              <span class="at">bairro =</span> no_bairro</span>
+<span id="cb4-238"><a href="#cb4-238" aria-hidden="true" tabindex="-1"></a>              <span class="at">num_endereco =</span> nu_endereco,</span>
+<span id="cb4-239"><a href="#cb4-239" aria-hidden="true" tabindex="-1"></a>              <span class="at">nm_bairro =</span> no_bairro</span>
 <span id="cb4-240"><a href="#cb4-240" aria-hidden="true" tabindex="-1"></a>            )</span>
 <span id="cb4-241"><a href="#cb4-241" aria-hidden="true" tabindex="-1"></a>        }</span>
 <span id="cb4-242"><a href="#cb4-242" aria-hidden="true" tabindex="-1"></a></span>
@@ -4598,14 +4598,14 @@ Columns: 15
 $ ano_cn_escolar   &lt;chr&gt; &quot;2022&quot;, &quot;2022&quot;, &quot;2022&quot;, &quot;2022&quot;, &quot;2022&quot;, &quot;2022&quot;, &quot;2022…
 $ sg_uf            &lt;chr&gt; &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;,…
 $ nm_mun           &lt;chr&gt; &quot;Porto Velho&quot;, &quot;Porto Velho&quot;, &quot;Porto Velho&quot;, &quot;Porto V…
-$ cod_mun          &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;…
+$ cd_mun           &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;…
 $ cep              &lt;chr&gt; &quot;76824556&quot;, &quot;76808108&quot;, &quot;76801123&quot;, &quot;76804214&quot;, &quot;7682…
 $ endereco         &lt;chr&gt; &quot;AVENIDA AMAZONAS&quot;, &quot;RUA CAETANO&quot;, &quot;AVENIDA CARLOS GO…
-$ numero           &lt;chr&gt; &quot;6492&quot;, &quot;3256&quot;, &quot;1135&quot;, &quot;1483&quot;, &quot;1056&quot;, &quot;605&quot;, &quot;4767&quot;…
-$ bairro           &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &quot;CENTRO&quot;, &quot;SANTA BARBARA&quot;,…
+$ num_endereco     &lt;chr&gt; &quot;6492&quot;, &quot;3256&quot;, &quot;1135&quot;, &quot;1483&quot;, &quot;1056&quot;, &quot;605&quot;, &quot;4767&quot;…
+$ nm_bairro        &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &quot;CENTRO&quot;, &quot;SANTA BARBARA&quot;,…
 $ nm_escola        &lt;chr&gt; &quot;EEEE ABNAEL MACHADO DE LIMA - CENE&quot;, &quot;EMEIEF PEQUENO…
 $ cod_escola       &lt;chr&gt; &quot;11000023&quot;, &quot;11000040&quot;, &quot;11000058&quot;, &quot;11000082&quot;, &quot;1100…
-$ tp_adm           &lt;chr&gt; &quot;Estadual&quot;, &quot;Municipal&quot;, &quot;Privada&quot;, &quot;Privada&quot;, &quot;Priva…
+$ tp_dependencia   &lt;chr&gt; &quot;Estadual&quot;, &quot;Municipal&quot;, &quot;Privada&quot;, &quot;Privada&quot;, &quot;Priva…
 $ qt_mat_bas       &lt;chr&gt; &quot;72&quot;, &quot;244&quot;, &quot;1289&quot;, &quot;80&quot;, &quot;750&quot;, &quot;175&quot;, &quot;976&quot;, &quot;300&quot;…
 $ no_censos_pres   &lt;int&gt; 4, 4, 4, 3, 4, 1, 4, 4, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4,…
 $ ano_censos_pres  &lt;chr&gt; &quot;2022, 2023, 2024, 2025&quot;, &quot;2022, 2023, 2024, 2025&quot;, &quot;…
@@ -4852,14 +4852,14 @@ Columns: 15
 $ ano_cn_escolar   &lt;fct&gt; 2024, 2024, 2024, 2024, 2024, 2022, 2024, 2024, 2024,…
 $ sg_uf            &lt;chr&gt; &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;,…
 $ nm_mun           &lt;chr&gt; &quot;Porto Velho&quot;, &quot;Porto Velho&quot;, &quot;Porto Velho&quot;, &quot;Porto V…
-$ cod_mun          &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;…
+$ cd_mun           &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;…
 $ cep              &lt;chr&gt; &quot;76824556&quot;, &quot;76808108&quot;, &quot;76801123&quot;, &quot;76804214&quot;, &quot;7682…
 $ endereco         &lt;chr&gt; &quot;AVENIDA AMAZONAS&quot;, &quot;RUA CAETANO&quot;, &quot;AVENIDA CARLOS GO…
-$ numero           &lt;chr&gt; &quot;6492&quot;, &quot;3256&quot;, &quot;1135&quot;, &quot;1483&quot;, &quot;1056&quot;, &quot;605&quot;, &quot;4767&quot;…
-$ bairro           &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &quot;CENTRO&quot;, &quot;SANTA BARBARA&quot;,…
+$ num_endereco     &lt;chr&gt; &quot;6492&quot;, &quot;3256&quot;, &quot;1135&quot;, &quot;1483&quot;, &quot;1056&quot;, &quot;605&quot;, &quot;4767&quot;…
+$ nm_bairro        &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &quot;CENTRO&quot;, &quot;SANTA BARBARA&quot;,…
 $ nm_escola        &lt;chr&gt; &quot;EEEE ABNAEL MACHADO DE LIMA - CENE&quot;, &quot;EMEIEF PEQUENO…
 $ cod_escola       &lt;chr&gt; &quot;11000023&quot;, &quot;11000040&quot;, &quot;11000058&quot;, &quot;11000082&quot;, &quot;1100…
-$ tp_adm           &lt;chr&gt; &quot;Estadual&quot;, &quot;Municipal&quot;, &quot;Privada&quot;, &quot;Privada&quot;, &quot;Priva…
+$ tp_dependencia   &lt;chr&gt; &quot;Estadual&quot;, &quot;Municipal&quot;, &quot;Privada&quot;, &quot;Privada&quot;, &quot;Priva…
 $ qt_mat_bas       &lt;chr&gt; &quot;71&quot;, &quot;207&quot;, &quot;1135&quot;, &quot;58&quot;, &quot;556&quot;, &quot;175&quot;, &quot;1046&quot;, &quot;285…
 $ no_censos_pres   &lt;int&gt; 4, 4, 4, 3, 4, 1, 4, 4, 4, 4, 4, 4, 4, 2, 4, 4, 4, 4,…
 $ ano_censos_pres  &lt;chr&gt; &quot;2022, 2023, 2024, 2025&quot;, &quot;2022, 2023, 2024, 2025&quot;, &quot;…
@@ -7859,11 +7859,11 @@ Quando selecionada a opção exportar, o resultado detalhado com todas as entida
 <span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extração do Número: captura a primeira sequência sem espaços após a vírgula</span></span>
 <span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">numero_bruto =</span> <span class="fu">str_extract</span>(depois_virgula, <span class="st">&quot;^[^</span><span class="sc">\\</span><span class="st">s]+&quot;</span>),</span>
 <span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Validação: mantém apenas se for estritamente numérico</span></span>
-<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">numero =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(numero_bruto, <span class="st">&quot;^</span><span class="sc">\\</span><span class="st">d+$&quot;</span>), numero_bruto, <span class="cn">NA_character_</span>),</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_endereco =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(numero_bruto, <span class="st">&quot;^</span><span class="sc">\\</span><span class="st">d+$&quot;</span>), numero_bruto, <span class="cn">NA_character_</span>),</span>
 <span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extração da Localidade (Bairro):</span></span>
 <span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Avalia os pontos APENAS na parte de trás da vírgula. Evita o falso positivo de &quot;AV.&quot;</span></span>
-<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">localidade =</span> <span class="fu">case_when</span>(</span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">nm_bairro =</span> <span class="fu">case_when</span>(</span>
 <span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>      <span class="fu">str_detect</span>(depois_virgula, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span>) <span class="sc">~</span> <span class="fu">str_trim</span>(<span class="fu">str_extract</span>(depois_virgula, <span class="st">&quot;[^</span><span class="sc">\\</span><span class="st">.]+$&quot;</span>)),</span>
 <span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>      <span class="co"># Se não tem ponto depois da vírgula, o bairro é o texto que sobra após remover o número</span></span>
 <span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="fu">str_trim</span>(<span class="fu">str_remove</span>(depois_virgula, <span class="st">&quot;^[^</span><span class="sc">\\</span><span class="st">s]+</span><span class="sc">\\</span><span class="st">s+&quot;</span>))</span>
@@ -7881,7 +7881,7 @@ Quando selecionada a opção exportar, o resultado detalhado com todas as entida
 <span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. Selecionar e ordenar apenas as colunas solicitadas</span></span>
-<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(codigo_inep, latitude, longitude, logradouro, numero, cep, localidade)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(codigo_inep, latitude, longitude, logradouro, num_endereco, cep, nm_bairro)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="renomeie-recodifique-e-selecione-as-variáveis-de-interesse-colunas" class="level4">
@@ -7896,9 +7896,9 @@ Quando selecionada a opção exportar, o resultado detalhado com todas as entida
 <span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat_inep =</span> latitude,</span>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">long_inep =</span> longitude,</span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">logradouro_ctlg =</span> logradouro, </span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_endereco_ctlg =</span> numero, </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_endereco_ctlg =</span> num_endereco, </span>
 <span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">cep_ctlg =</span> cep, </span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">nm_bairro_ctlg =</span> localidade</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">nm_bairro_ctlg =</span> nm_bairro</span>
 <span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remova os eventuais espaços extras das coord. geo.</span></span>
@@ -7991,16 +7991,16 @@ $ nm_bairro_ctlg    &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Para as escolas sem dados de endereço nos microdados (caso de 2025), atribua os dados do catálogo de escolas</span></span>
 <span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>escolas_com_coord_geo <span class="ot">&lt;-</span> escolas_geo <span class="sc">|&gt;</span></span>
 <span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(lat_inep) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(long_inep)) <span class="sc">|&gt;</span></span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bairro =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(bairro), nm_bairro_ctlg, bairro),</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nm_bairro =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(nm_bairro), nm_bairro_ctlg, nm_bairro),</span>
 <span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>         <span class="at">endereco =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(endereco), logradouro_ctlg, endereco),</span>
-<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">numero =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(numero), num_endereco_ctlg, numero),</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">num_endereco =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(num_endereco), num_endereco_ctlg, num_endereco),</span>
 <span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">cep =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cep), cep_ctlg, cep)) <span class="sc">|&gt;</span> </span>
 <span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(logradouro_ctlg, num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg))</span>
 <span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>escolas_sem_coord_geo <span class="ot">&lt;-</span> escolas_sem_coord_geo <span class="sc">|&gt;</span></span>
-<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">bairro =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(bairro), nm_bairro_ctlg, bairro),</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">nm_bairro =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(nm_bairro), nm_bairro_ctlg, nm_bairro),</span>
 <span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>         <span class="at">endereco =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(endereco), logradouro_ctlg, endereco),</span>
-<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">numero =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(numero), num_endereco_ctlg, numero),</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">num_endereco =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(num_endereco), num_endereco_ctlg, num_endereco),</span>
 <span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>         <span class="at">cep =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(cep), cep_ctlg, cep)) <span class="sc">|&gt;</span> </span>
 <span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(logradouro_ctlg, num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -8011,7 +8011,7 @@ $ nm_bairro_ctlg    &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &
 <p>Nesse sentido, inicialmente criam-se objetos com i) os códigos das escolas sem coordenadas geográficas e ii) as variáveis que auxiliarão o algoritmo de geocodificação.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecione as variáveis que serão utilizadas na geocodificação </span></span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>sel_var_geocod <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ano_cn_escolar&quot;</span>, <span class="st">&quot;cod_escola&quot;</span>, <span class="st">&quot;sg_uf&quot;</span>, <span class="st">&quot;cod_mun&quot;</span>, <span class="st">&quot;endereco&quot;</span>, <span class="st">&quot;numero&quot;</span>, <span class="st">&quot;cep&quot;</span>, <span class="st">&quot;bairro&quot;</span>, <span class="st">&quot;ano_censos_pres&quot;</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>sel_var_geocod <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;ano_cn_escolar&quot;</span>, <span class="st">&quot;cod_escola&quot;</span>, <span class="st">&quot;sg_uf&quot;</span>, <span class="st">&quot;cd_mun&quot;</span>, <span class="st">&quot;endereco&quot;</span>, <span class="st">&quot;num_endereco&quot;</span>, <span class="st">&quot;cep&quot;</span>, <span class="st">&quot;nm_bairro&quot;</span>, <span class="st">&quot;ano_censos_pres&quot;</span>)</span>
 <span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtenha o código das escolas que não possuem coordenadas geográficas</span></span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>sel_esc_sem_coordgeo <span class="ot">&lt;-</span> escolas_sem_coord_geo <span class="sc">|&gt;</span></span>
@@ -8067,10 +8067,10 @@ $ nm_bairro_ctlg    &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &
 <span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Crie a base anual a ser geocodificada</span></span>
 <span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  base_esc_geocod_orig <span class="ot">&lt;-</span> base_unica_map_com_rep <span class="sc">|&gt;</span></span>
 <span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(cod_escola <span class="sc">%in%</span> sel_esc_sem_coordgeo <span class="sc">&amp;</span> ano_cn_escolar <span class="sc">==</span> ano) <span class="sc">|&gt;</span></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">&quot;cep&quot;</span>, <span class="st">&quot;endereco&quot;</span>, <span class="st">&quot;numero&quot;</span>, <span class="st">&quot;bairro&quot;</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(<span class="st">&quot;cep&quot;</span>, <span class="st">&quot;endereco&quot;</span>, <span class="st">&quot;num_endereco&quot;</span>, <span class="st">&quot;nm_bairro&quot;</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(</span>
 <span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>      escolas_sem_coord_geo <span class="sc">|&gt;</span></span>
-<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">&quot;cod_escola&quot;</span>, <span class="st">&quot;bairro&quot;</span>, <span class="st">&quot;endereco&quot;</span>, <span class="st">&quot;numero&quot;</span>, <span class="st">&quot;cep&quot;</span>),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">select</span>(<span class="st">&quot;cod_escola&quot;</span>, <span class="st">&quot;nm_bairro&quot;</span>, <span class="st">&quot;endereco&quot;</span>, <span class="st">&quot;num_endereco&quot;</span>, <span class="st">&quot;cep&quot;</span>),</span>
 <span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">&quot;cod_escola&quot;</span></span>
 <span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
 <span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="fu">all_of</span>(sel_var_geocod))</span>
@@ -8078,11 +8078,11 @@ $ nm_bairro_ctlg    &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &
 <span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Defina os campos que serão utilizados para a geocodificação</span></span>
 <span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  campos <span class="ot">&lt;-</span> <span class="fu">definir_campos</span>(</span>
 <span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">estado =</span> <span class="st">&quot;sg_uf&quot;</span>,</span>
-<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">municipio =</span> <span class="st">&quot;cod_mun&quot;</span>,</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">municipio =</span> <span class="st">&quot;cd_mun&quot;</span>,</span>
 <span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">logradouro =</span> <span class="st">&quot;endereco&quot;</span>,</span>
-<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">numero =</span> <span class="st">&quot;numero&quot;</span>,</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">numero =</span> <span class="st">&quot;num_endereco&quot;</span>,</span>
 <span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">cep =</span> <span class="st">&quot;cep&quot;</span>,</span>
-<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">localidade =</span> <span class="st">&quot;bairro&quot;</span>)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">localidade =</span> <span class="st">&quot;nm_bairro&quot;</span>)</span>
 <span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Transforme a classe das variáveis (exigência do algoritmo)</span></span>
 <span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  base_esc_geocod <span class="ot">&lt;-</span> base_esc_geocod_orig <span class="sc">|&gt;</span></span>
@@ -8099,11 +8099,11 @@ $ nm_bairro_ctlg    &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &
 <span id="cb28-37"><a href="#cb28-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-38"><a href="#cb28-38" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Selecione apenas as variáveis de interesse</span></span>
 <span id="cb28-39"><a href="#cb28-39" aria-hidden="true" tabindex="-1"></a>  escolas_geocod <span class="ot">&lt;-</span> escolas_geocod <span class="sc">|&gt;</span></span>
-<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(sg_uf, cod_mun, cod_escola, lat, lon, precisao, desvio_metros, tipo_resultado, ano_censos_pres)</span>
+<span id="cb28-40"><a href="#cb28-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(sg_uf, cd_mun, cod_escola, lat, lon, precisao, desvio_metros, tipo_resultado, ano_censos_pres)</span>
 <span id="cb28-41"><a href="#cb28-41" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Renomeie as colunas (exceto as variáveis que permanecerão as mesmas), acrescentando o ano</span></span>
 <span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Crie objetos auxiliares para identificar quais variáveis serão alteradas</span></span>
-<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>  var_perm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;sg_uf&quot;</span>, <span class="st">&quot;cod_mun&quot;</span>, <span class="st">&quot;cod_escola&quot;</span>)</span>
+<span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>  var_perm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;sg_uf&quot;</span>, <span class="st">&quot;cd_mun&quot;</span>, <span class="st">&quot;cod_escola&quot;</span>)</span>
 <span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>  outras_var <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(escolas_geocod), var_perm)</span>
 <span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>  novos_nomes_var <span class="ot">&lt;-</span> <span class="fu">str_c</span>(outras_var, <span class="st">&quot;_&quot;</span>, ano)</span>
 <span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a> </span>
@@ -8313,7 +8313,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <pre><code>List of 4
  $ esc_geocod_2022:&#39;data.frame&#39;:    29162 obs. of  9 variables:
   ..$ sg_uf               : chr [1:29162] &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; ...
-  ..$ cod_mun             : chr [1:29162] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
+  ..$ cd_mun              : chr [1:29162] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
   ..$ cod_escola          : chr [1:29162] &quot;11000325&quot; &quot;11000546&quot; &quot;11000562&quot; &quot;11000635&quot; ...
   ..$ lat_2022            : num [1:29162] -8.79 -9.78 -9.73 -9.11 -9.11 ...
   ..$ lon_2022            : num [1:29162] -63.9 -66.6 -65.5 -63.9 -63.9 ...
@@ -8323,7 +8323,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
   ..$ ano_censos_pres_2022: chr [1:29162] &quot;2022, 2023&quot; &quot;2022&quot; &quot;2022, 2023, 2024, 2025&quot; &quot;2022, 2023, 2024, 2025&quot; ...
  $ esc_geocod_2023:&#39;data.frame&#39;:    30386 obs. of  9 variables:
   ..$ sg_uf               : chr [1:30386] &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; ...
-  ..$ cod_mun             : chr [1:30386] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
+  ..$ cd_mun              : chr [1:30386] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
   ..$ cod_escola          : chr [1:30386] &quot;11000325&quot; &quot;11000562&quot; &quot;11000635&quot; &quot;11001011&quot; ...
   ..$ lat_2023            : num [1:30386] -8.79 -9.73 -9.11 -9.11 -8.42 ...
   ..$ lon_2023            : num [1:30386] -63.9 -65.5 -63.9 -63.9 -63.5 ...
@@ -8333,7 +8333,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
   ..$ ano_censos_pres_2023: chr [1:30386] &quot;2022, 2023&quot; &quot;2022, 2023, 2024, 2025&quot; &quot;2022, 2023, 2024, 2025&quot; &quot;2022, 2023, 2024, 2025&quot; ...
  $ esc_geocod_2024:&#39;data.frame&#39;:    32105 obs. of  9 variables:
   ..$ sg_uf               : chr [1:32105] &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; ...
-  ..$ cod_mun             : chr [1:32105] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
+  ..$ cd_mun              : chr [1:32105] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
   ..$ cod_escola          : chr [1:32105] &quot;11000562&quot; &quot;11000635&quot; &quot;11001011&quot; &quot;11001070&quot; ...
   ..$ lat_2024            : num [1:32105] -9.73 -9.11 -9.11 -8.42 -9.11 ...
   ..$ lon_2024            : num [1:32105] -65.5 -63.9 -63.9 -63.5 -63.9 ...
@@ -8343,7 +8343,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
   ..$ ano_censos_pres_2024: chr [1:32105] &quot;2022, 2023, 2024, 2025&quot; &quot;2022, 2023, 2024, 2025&quot; &quot;2022, 2023, 2024, 2025&quot; &quot;2022, 2023, 2024, 2025&quot; ...
  $ esc_geocod_2025:&#39;data.frame&#39;:    34289 obs. of  9 variables:
   ..$ sg_uf               : chr [1:34289] &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; &quot;RO&quot; ...
-  ..$ cod_mun             : chr [1:34289] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
+  ..$ cd_mun              : chr [1:34289] &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; &quot;1100205&quot; ...
   ..$ cod_escola          : chr [1:34289] &quot;11000562&quot; &quot;11000635&quot; &quot;11001011&quot; &quot;11001070&quot; ...
   ..$ lat_2025            : num [1:34289] -9.73 -9.11 -9.11 -8.42 -9.11 ...
   ..$ lon_2025            : num [1:34289] -65.5 -63.9 -63.9 -63.5 -63.9 ...
@@ -8359,7 +8359,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transforme a lista com os resultados da geocodificação em uma única base tabular</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>escolas_geocod_tds_anos <span class="ot">&lt;-</span> resultados_geocod <span class="sc">|&gt;</span></span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reduce</span>(full_join, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;sg_uf&quot;</span>, <span class="st">&quot;cod_mun&quot;</span>, <span class="st">&quot;cod_escola&quot;</span>))</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reduce</span>(full_join, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">&quot;sg_uf&quot;</span>, <span class="st">&quot;cd_mun&quot;</span>, <span class="st">&quot;cod_escola&quot;</span>))</span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Veja os dados para as primeiras escolas da base única</span></span>
 <span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>escolas_geocod_tds_anos <span class="sc">|&gt;</span></span>
@@ -8399,7 +8399,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <thead>
 <tr class="header">
 <th style="text-align: left;">sg_uf</th>
-<th style="text-align: left;">cod_mun</th>
+<th style="text-align: left;">cd_mun</th>
 <th style="text-align: left;">cod_escola</th>
 <th style="text-align: right;">lat_2022</th>
 <th style="text-align: right;">lon_2022</th>
@@ -8635,19 +8635,19 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <col style="width: 5%">
 <col style="width: 2%">
 <col style="width: 2%">
-<col style="width: 3%">
 <col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 5%">
-<col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 3%">
 <col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 5%">
 <col style="width: 2%">
 <col style="width: 2%">
-<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 4%">
 <col style="width: 5%">
@@ -8655,7 +8655,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <thead>
 <tr class="header">
 <th style="text-align: left;">sg_uf</th>
-<th style="text-align: left;">cod_mun</th>
+<th style="text-align: left;">cd_mun</th>
 <th style="text-align: left;">cod_escola</th>
 <th style="text-align: right;">lat_2022</th>
 <th style="text-align: right;">lon_2022</th>
@@ -8686,37 +8686,37 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">PA</td>
-<td style="text-align: left;">1505437</td>
-<td style="text-align: left;">15176274</td>
+<td style="text-align: left;">1504422</td>
+<td style="text-align: left;">15034690</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">-6.768833</td>
-<td style="text-align: right;">-51.05378</td>
-<td style="text-align: left;">cep</td>
-<td style="text-align: right;">64024</td>
-<td style="text-align: left;">dc02</td>
+<td style="text-align: right;">-1.351397</td>
+<td style="text-align: right;">-48.33851</td>
+<td style="text-align: left;">numero_aproximado</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">da04</td>
 <td style="text-align: left;">2022, 2023, 2024, 2025</td>
-<td style="text-align: right;">-6.768833</td>
-<td style="text-align: right;">-51.05378</td>
-<td style="text-align: left;">cep</td>
-<td style="text-align: right;">64024</td>
-<td style="text-align: left;">dc02</td>
+<td style="text-align: right;">-1.351397</td>
+<td style="text-align: right;">-48.33851</td>
+<td style="text-align: left;">numero_aproximado</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">da04</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+<td style="text-align: right;">-1.351397</td>
+<td style="text-align: right;">-48.33851</td>
+<td style="text-align: left;">numero_aproximado</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: left;">da04</td>
 <td style="text-align: left;">2022, 2023, 2024, 2025</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">BA</td>
-<td style="text-align: left;">2913606</td>
-<td style="text-align: left;">29481546</td>
+<td style="text-align: left;">AC</td>
+<td style="text-align: left;">1200609</td>
+<td style="text-align: left;">12001031</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
@@ -8729,47 +8729,47 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">-14.547012</td>
-<td style="text-align: right;">-39.51300</td>
-<td style="text-align: left;">localidade</td>
-<td style="text-align: right;">34</td>
-<td style="text-align: left;">db01</td>
+<td style="text-align: right;">-8.169335</td>
+<td style="text-align: right;">-70.88670</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">101054</td>
+<td style="text-align: left;">dc02</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+<td style="text-align: right;">-8.169335</td>
+<td style="text-align: right;">-70.88670</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">101054</td>
+<td style="text-align: left;">dc02</td>
 <td style="text-align: left;">2022, 2023, 2024, 2025</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">MA</td>
-<td style="text-align: left;">2104206</td>
-<td style="text-align: left;">21132208</td>
+<td style="text-align: left;">AM</td>
+<td style="text-align: left;">1300102</td>
+<td style="text-align: left;">13096249</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">NA</td>
-<td style="text-align: right;">-5.465425</td>
-<td style="text-align: right;">-43.92518</td>
-<td style="text-align: left;">logradouro</td>
-<td style="text-align: right;">583</td>
-<td style="text-align: left;">dl02</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">-3.795525</td>
+<td style="text-align: right;">-61.67254</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">83658</td>
+<td style="text-align: left;">dc02</td>
 <td style="text-align: left;">2022, 2023, 2024, 2025</td>
-<td style="text-align: right;">-5.465425</td>
-<td style="text-align: right;">-43.92518</td>
-<td style="text-align: left;">logradouro</td>
-<td style="text-align: right;">583</td>
-<td style="text-align: left;">dl02</td>
-<td style="text-align: left;">2022, 2023, 2024, 2025</td>
-<td style="text-align: right;">-5.465425</td>
-<td style="text-align: right;">-43.92518</td>
-<td style="text-align: left;">logradouro</td>
-<td style="text-align: right;">583</td>
-<td style="text-align: left;">dl02</td>
-<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">RS</td>
@@ -8803,7 +8803,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <tr class="odd">
 <td style="text-align: left;">AM</td>
 <td style="text-align: left;">1300102</td>
-<td style="text-align: left;">13096249</td>
+<td style="text-align: left;">13096184</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
@@ -8830,9 +8830,9 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <td style="text-align: left;">NA</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">AM</td>
-<td style="text-align: left;">1300102</td>
-<td style="text-align: left;">13109391</td>
+<td style="text-align: left;">MT</td>
+<td style="text-align: left;">5101837</td>
+<td style="text-align: left;">51014793</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
@@ -8845,12 +8845,70 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">NA</td>
-<td style="text-align: right;">-3.795525</td>
-<td style="text-align: right;">-61.67254</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PR</td>
+<td style="text-align: left;">4105201</td>
+<td style="text-align: left;">41137175</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">-24.837429</td>
+<td style="text-align: right;">-49.30365</td>
 <td style="text-align: left;">cep</td>
-<td style="text-align: right;">83658</td>
+<td style="text-align: right;">24643</td>
 <td style="text-align: left;">dc02</td>
-<td style="text-align: left;">2023, 2024, 2025</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+<td style="text-align: right;">-24.837429</td>
+<td style="text-align: right;">-49.30365</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">24643</td>
+<td style="text-align: left;">dc02</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MA</td>
+<td style="text-align: left;">2109452</td>
+<td style="text-align: left;">21289743</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: right;">-2.446968</td>
+<td style="text-align: right;">-44.12229</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">5254</td>
+<td style="text-align: left;">dc02</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
@@ -8860,63 +8918,34 @@ esc_geocod_2025 9      data.frame list</code></pre>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">MT</td>
-<td style="text-align: left;">5101837</td>
-<td style="text-align: left;">51065860</td>
+<td style="text-align: left;">5103403</td>
+<td style="text-align: left;">51037572</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: right;">NA</td>
 <td style="text-align: left;">NA</td>
 <td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
+<td style="text-align: right;">-15.857723</td>
+<td style="text-align: right;">-55.49980</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">8082</td>
+<td style="text-align: left;">dc02</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+<td style="text-align: right;">-15.857723</td>
+<td style="text-align: right;">-55.49980</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">8082</td>
+<td style="text-align: left;">dc02</td>
+<td style="text-align: left;">2022, 2023, 2024, 2025</td>
+<td style="text-align: right;">-15.857723</td>
+<td style="text-align: right;">-55.49980</td>
+<td style="text-align: left;">cep</td>
+<td style="text-align: right;">8082</td>
+<td style="text-align: left;">dc02</td>
 <td style="text-align: left;">2022, 2023, 2024, 2025</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">AC</td>
-<td style="text-align: left;">1200401</td>
-<td style="text-align: left;">12011274</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">-9.989703</td>
-<td style="text-align: right;">-67.97469</td>
-<td style="text-align: left;">cep</td>
-<td style="text-align: right;">79715</td>
-<td style="text-align: left;">dc02</td>
-<td style="text-align: left;">2022, 2023, 2024, 2025</td>
-<td style="text-align: right;">-9.989703</td>
-<td style="text-align: right;">-67.97469</td>
-<td style="text-align: left;">cep</td>
-<td style="text-align: right;">79715</td>
-<td style="text-align: left;">dc02</td>
-<td style="text-align: left;">2022, 2023, 2024, 2025</td>
-</tr>
-<tr class="odd">
 <td style="text-align: left;">MA</td>
 <td style="text-align: left;">2111722</td>
 <td style="text-align: left;">21108315</td>
@@ -8943,35 +8972,6 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <td style="text-align: left;">logradouro</td>
 <td style="text-align: right;">6</td>
 <td style="text-align: left;">dl02</td>
-<td style="text-align: left;">2022, 2023, 2024, 2025</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MT</td>
-<td style="text-align: left;">5107958</td>
-<td style="text-align: left;">51090457</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: right;">-14.622953</td>
-<td style="text-align: right;">-57.49594</td>
-<td style="text-align: left;">municipio</td>
-<td style="text-align: right;">36911</td>
-<td style="text-align: left;">dm01</td>
-<td style="text-align: left;">2022, 2023, 2024, 2025</td>
-<td style="text-align: right;">-14.622953</td>
-<td style="text-align: right;">-57.49594</td>
-<td style="text-align: left;">municipio</td>
-<td style="text-align: right;">36911</td>
-<td style="text-align: left;">dm01</td>
 <td style="text-align: left;">2022, 2023, 2024, 2025</td>
 </tr>
 </tbody>
@@ -9016,7 +9016,7 @@ esc_geocod_2025 9      data.frame list</code></pre>
 <pre><code>Rows: 39,171
 Columns: 27
 $ sg_uf                &lt;chr&gt; &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;…
-$ cod_mun              &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100106&quot;, &quot;1100130&quot;, &quot;1100…
+$ cd_mun               &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100106&quot;, &quot;1100130&quot;, &quot;1100…
 $ cod_escola           &lt;chr&gt; &quot;11000325&quot;, &quot;11001267&quot;, &quot;11006706&quot;, &quot;11008598&quot;, &quot;…
 $ lat_2022             &lt;dbl&gt; -8.794654, -8.850409, -10.768905, -9.429623, -8.7…
 $ lon_2022             &lt;dbl&gt; -63.88509, -63.94084, -65.33086, -62.00170, -63.9…
@@ -9148,7 +9148,7 @@ $ ano_censos_pres_2025 &lt;chr&gt; NA, &quot;2022, 2023, 2024, 2025&quot;, NA, &
 </table>
 </div>
 </div>
-<p>Como demonstra a estrutura da base, com exceção das variáveis relacionadas à unidade federativa (<code>sg_uf</code>), ao código do município (<code>cod_mun</code>) e ao código de identificação único da escola (<code>cod_escola</code>), para todas as outras existem uma versão relacionada a cada ano do censo analisado (lat_2023, lon_2023, precisao_2023, etc.). No caso específico das coordenadas geográficas, deve-se ter apenas um par de referência - em tese, o de maior acurácia.</p>
+<p>Como demonstra a estrutura da base, com exceção das variáveis relacionadas à unidade federativa (<code>sg_uf</code>), ao código do município (<code>cd_mun</code>) e ao código de identificação único da escola (<code>cod_escola</code>), para todas as outras existem uma versão relacionada a cada ano do censo analisado (lat_2023, lon_2023, precisao_2023, etc.). No caso específico das coordenadas geográficas, deve-se ter apenas um par de referência - em tese, o de maior acurácia.</p>
 <p>Nesse sentido, baseando-se no <em>menor valor de desvio da localização da escola</em> e na busca pelo <em>dado mais recente possível</em>, as próximas linhas do código selecionarão o caso (escola) com as melhores coordenadas. Apenas para exemplificar o exposto, se o desvio constatado para uma escola for de 6 metros, em 2023, e de 36 metros, em 2024, o par de coordenadas selecionado seria o do primeiro ano (2023). Por sua vez, se o desvio encontrado para ambos os anos for o mesmo, as coordenadas recuperadas estariam atreladas ao ano de 2024 (mais recente e adequado possível). Por fim, para fins de registro e análise, o histórico dos dados constará na base gerada.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transforme as colunas anuais em formato longo</span></span>
@@ -9162,8 +9162,8 @@ $ ano_censos_pres_2025 &lt;chr&gt; NA, &quot;2022, 2023, 2024, 2025&quot;, NA, &
 <span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Selecione a escola com o menor desvio</span></span>
 <span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>escolas_geocod_melhor_ano <span class="ot">&lt;-</span> escolas_geocod_long <span class="sc">|&gt;</span> </span>
-<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cod_escola, sg_uf, cod_mun) <span class="sc">|&gt;</span></span>
-<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(cod_escola, sg_uf, cod_mun, desvio_metros, <span class="fu">desc</span>(ano), <span class="at">.by_group =</span> T) <span class="sc">|&gt;</span> </span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cod_escola, sg_uf, cd_mun) <span class="sc">|&gt;</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(cod_escola, sg_uf, cd_mun, desvio_metros, <span class="fu">desc</span>(ano), <span class="at">.by_group =</span> T) <span class="sc">|&gt;</span> </span>
 <span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
 <span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
 <span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">melhor_ano =</span> ano,</span>
@@ -9177,7 +9177,7 @@ $ ano_censos_pres_2025 &lt;chr&gt; NA, &quot;2022, 2023, 2024, 2025&quot;, NA, &
 <span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(escolas_geocod_melhor_ano) <span class="sc">|&gt;</span> </span>
 <span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(<span class="at">.after =</span> cod_escola, <span class="fu">starts_with</span>(<span class="st">&quot;melhor&quot;</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Joining with `by = join_by(sg_uf, cod_mun, cod_escola, tipo_resultado_2022,
+<pre><code>Joining with `by = join_by(sg_uf, cd_mun, cod_escola, tipo_resultado_2022,
 ano_censos_pres_2022, tipo_resultado_2023, ano_censos_pres_2023,
 tipo_resultado_2024, ano_censos_pres_2024, tipo_resultado_2025,
 ano_censos_pres_2025)`</code></pre>
@@ -9297,7 +9297,7 @@ ano_censos_pres_2025)`</code></pre>
 <span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>escolas_geocod_compatib <span class="ot">&lt;-</span> escolas_geocod_compatib <span class="sc">|&gt;</span></span>
 <span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">any_of</span>(<span class="fu">matches</span>(colunas_excluir))) <span class="sc">|&gt;</span></span>
 <span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fonte_coord_geo =</span> <span class="st">&quot;geocodebr&quot;</span>)  <span class="sc">|&gt;</span> </span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(base_unica_map_com_rep, <span class="fu">join_by</span>(sg_uf, cod_mun, cod_escola, melhor_ano <span class="sc">==</span> ano_cn_escolar)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(base_unica_map_com_rep, <span class="fu">join_by</span>(sg_uf, cd_mun, cod_escola, melhor_ano <span class="sc">==</span> ano_cn_escolar)) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>O próximo passo consiste em integrar ambas as bases com coordenadas geográficas (<code>escolas_com_coord_geo</code> e <code>escolas_geocod_compatib</code>).</p>
 <div class="cell">
@@ -9312,20 +9312,19 @@ ano_censos_pres_2025)`</code></pre>
 <span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Junte as informações das coordenadas geográficas nos mesmos campos</span></span>
 <span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(lat_inep), <span class="fu">as.numeric</span>(lat_inep), melhor_latitude),</span>
 <span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">lon =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(long_inep), <span class="fu">as.numeric</span>(long_inep), melhor_longitude),</span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fonte_ano_cn_escolar =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(melhor_ano), melhor_ano, ano_cn_escolar),</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Modifique a classe de algumas variáveis</span></span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">c</span>(fonte_ano_cn_escolar, tp_adm, sg_uf, cod_mun, fonte_coord_geo), as.factor)) <span class="sc">|&gt;</span></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(lat_inep, long_inep, melhor_ano, melhor_latitude, melhor_longitude, ano_cn_escolar)) <span class="sc">|&gt;</span></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># drop_na(c(lat, lon)) |&gt;</span></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">precisao =</span> melhor_precisao, </span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">desvio =</span> melhor_desvio</span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(cod_escola, nm_escola, lat, lon, precisao, desvio, fonte_coord_geo, fonte_ano_cn_escolar, tp_adm, qt_mat_bas, sg_uf, cod_mun, cep, endereco, numero, bairro) <span class="sc">|&gt;</span> </span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(cod_escola)</span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>escolas_geo_tot <span class="sc">|&gt;</span></span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">fonte_ano_cn_escolar =</span> <span class="fu">if_else</span>(<span class="sc">!</span><span class="fu">is.na</span>(melhor_ano), melhor_ano, ano_cn_escolar)</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(lat_inep, long_inep, melhor_ano, melhor_latitude, melhor_longitude, ano_cn_escolar)) <span class="sc">|&gt;</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># drop_na(c(lat, lon)) |&gt;</span></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">precisao =</span> melhor_precisao, </span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">desvio_metros =</span> melhor_desvio</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">relocate</span>(cod_escola, nm_escola, lat, lon, precisao, desvio_metros, fonte_coord_geo, fonte_ano_cn_escolar, tp_dependencia, qt_mat_bas, sg_uf, cd_mun, cep, endereco, num_endereco, nm_bairro) <span class="sc">|&gt;</span> </span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(cod_escola)</span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>escolas_geo_tot <span class="sc">|&gt;</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 189,545
 Columns: 20
@@ -9334,17 +9333,17 @@ $ nm_escola            &lt;chr&gt; &quot;EEEE ABNAEL MACHADO DE LIMA - CENE&quot
 $ lat                  &lt;dbl&gt; -8.758459, -8.793730, -8.760734, -8.765205, -8.76…
 $ lon                  &lt;dbl&gt; -63.85401, -63.88392, -63.90199, -63.89618, -63.8…
 $ precisao             &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ desvio               &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
-$ fonte_coord_geo      &lt;fct&gt; catalogo_inep, catalogo_inep, catalogo_inep, cata…
-$ fonte_ano_cn_escolar &lt;fct&gt; 2024, 2024, 2024, 2024, 2024, 2022, 2024, 2024, 2…
-$ tp_adm               &lt;fct&gt; Estadual, Municipal, Privada, Privada, Privada, P…
+$ desvio_metros        &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…
+$ fonte_coord_geo      &lt;chr&gt; &quot;catalogo_inep&quot;, &quot;catalogo_inep&quot;, &quot;catalogo_inep&quot;…
+$ fonte_ano_cn_escolar &lt;chr&gt; &quot;2024&quot;, &quot;2024&quot;, &quot;2024&quot;, &quot;2024&quot;, &quot;2024&quot;, &quot;2022&quot;, &quot;…
+$ tp_dependencia       &lt;chr&gt; &quot;Estadual&quot;, &quot;Municipal&quot;, &quot;Privada&quot;, &quot;Privada&quot;, &quot;P…
 $ qt_mat_bas           &lt;chr&gt; &quot;71&quot;, &quot;207&quot;, &quot;1135&quot;, &quot;58&quot;, &quot;556&quot;, &quot;175&quot;, &quot;1046&quot;, …
-$ sg_uf                &lt;fct&gt; RO, RO, RO, RO, RO, RO, RO, RO, RO, RO, RO, RO, R…
-$ cod_mun              &lt;fct&gt; 1100205, 1100205, 1100205, 1100205, 1100205, 1100…
+$ sg_uf                &lt;chr&gt; &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;RO&quot;, &quot;…
+$ cd_mun               &lt;chr&gt; &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100205&quot;, &quot;1100…
 $ cep                  &lt;chr&gt; &quot;76824556&quot;, &quot;76808108&quot;, &quot;76801123&quot;, &quot;76804214&quot;, &quot;…
 $ endereco             &lt;chr&gt; &quot;AVENIDA AMAZONAS&quot;, &quot;RUA CAETANO&quot;, &quot;AVENIDA CARLO…
-$ numero               &lt;chr&gt; &quot;6492&quot;, &quot;3256&quot;, &quot;1135&quot;, &quot;1483&quot;, &quot;1056&quot;, &quot;605&quot;, &quot;4…
-$ bairro               &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &quot;CENTRO&quot;, &quot;SANTA BARBA…
+$ num_endereco         &lt;chr&gt; &quot;6492&quot;, &quot;3256&quot;, &quot;1135&quot;, &quot;1483&quot;, &quot;1056&quot;, &quot;605&quot;, &quot;4…
+$ nm_bairro            &lt;chr&gt; &quot;TIRADENTES&quot;, &quot;CALADINHO&quot;, &quot;CENTRO&quot;, &quot;SANTA BARBA…
 $ nm_mun               &lt;chr&gt; &quot;Porto Velho&quot;, &quot;Porto Velho&quot;, &quot;Porto Velho&quot;, &quot;Por…
 $ no_censos_pres       &lt;int&gt; 4, 4, 4, 3, 4, 1, 4, 4, 4, 4, 4, 4, 4, 2, 4, 4, 4…
 $ ano_censos_pres      &lt;chr&gt; &quot;2022, 2023, 2024, 2025&quot;, &quot;2022, 2023, 2024, 2025…
