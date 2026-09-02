@@ -343,10 +343,10 @@ processar_censo_ano <- function(ano, max_tentativas = 3) {
           rename(
             ano_cn_escolar = nu_ano_censo,
             nm_mun = no_municipio,
-            cod_mun = co_municipio,
+            cd_mun = co_municipio,
             nm_escola = no_entidade,
             cod_escola = co_entidade,
-            tp_adm = tp_dependencia
+            tp_dependencia = tp_dependencia
           )
 
         #Renomeia as variáveis de endereço para o padrão utilizado na plataforma GeoReDUS, exceto para o ano de 2025
@@ -355,8 +355,8 @@ processar_censo_ano <- function(ano, max_tentativas = 3) {
             rename(
               cep = co_cep,
               endereco = ds_endereco,
-              numero = nu_endereco,
-              bairro = no_bairro
+              num_endereco = nu_endereco,
+              nm_bairro = no_bairro
             )
         }
 
@@ -929,11 +929,11 @@ catalogo_escolas <- catalogo_escolas |>
     # Extração do Número: captura a primeira sequência sem espaços após a vírgula
     numero_bruto = str_extract(depois_virgula, "^[^\\s]+"),
     # Validação: mantém apenas se for estritamente numérico
-    numero = ifelse(str_detect(numero_bruto, "^\\d+$"), numero_bruto, NA_character_),
+    num_endereco = ifelse(str_detect(numero_bruto, "^\\d+$"), numero_bruto, NA_character_),
     
     # Extração da Localidade (Bairro):
     # Avalia os pontos APENAS na parte de trás da vírgula. Evita o falso positivo de "AV."
-    localidade = case_when(
+    nm_bairro = case_when(
       str_detect(depois_virgula, "\\.") ~ str_trim(str_extract(depois_virgula, "[^\\.]+$")),
       # Se não tem ponto depois da vírgula, o bairro é o texto que sobra após remover o número
       TRUE ~ str_trim(str_remove(depois_virgula, "^[^\\s]+\\s+"))
@@ -951,7 +951,7 @@ catalogo_escolas <- catalogo_escolas |>
   ) |>
   
   # 3. Selecionar e ordenar apenas as colunas solicitadas
-  select(codigo_inep, latitude, longitude, logradouro, numero, cep, localidade)
+  select(codigo_inep, latitude, longitude, logradouro, num_endereco, cep, nm_bairro)
 ```
 
 #### Renomeie, recodifique e selecione as variáveis de interesse (colunas)
@@ -969,9 +969,9 @@ catalogo_escolas_geo <- catalogo_escolas |>
     lat_inep = latitude,
     long_inep = longitude,
     logradouro_ctlg = logradouro, 
-    num_endereco_ctlg = numero, 
+    num_endereco_ctlg = num_endereco, 
     cep_ctlg = cep, 
-    nm_bairro_ctlg = localidade
+    nm_bairro_ctlg = nm_bairro
   ) |>
   mutate(
     # Remova os eventuais espaços extras das coord. geo.
@@ -1040,16 +1040,16 @@ escolas_sem_coord_geo <- escolas_geo |>
 # Para as escolas sem dados de endereço nos microdados (caso de 2025), atribua os dados do catálogo de escolas
 escolas_com_coord_geo <- escolas_geo |>
   filter(!is.na(lat_inep) & !is.na(long_inep)) |>
-  mutate(bairro = ifelse(is.na(bairro), nm_bairro_ctlg, bairro),
+  mutate(nm_bairro = ifelse(is.na(nm_bairro), nm_bairro_ctlg, nm_bairro),
          endereco = ifelse(is.na(endereco), logradouro_ctlg, endereco),
-         numero = ifelse(is.na(numero), num_endereco_ctlg, numero),
+         num_endereco = ifelse(is.na(num_endereco), num_endereco_ctlg, num_endereco),
          cep = ifelse(is.na(cep), cep_ctlg, cep)) |> 
   select(!c(logradouro_ctlg, num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg))
 
 escolas_sem_coord_geo <- escolas_sem_coord_geo |>
-  mutate(bairro = ifelse(is.na(bairro), nm_bairro_ctlg, bairro),
+  mutate(nm_bairro = ifelse(is.na(nm_bairro), nm_bairro_ctlg, nm_bairro),
          endereco = ifelse(is.na(endereco), logradouro_ctlg, endereco),
-         numero = ifelse(is.na(numero), num_endereco_ctlg, numero),
+         num_endereco = ifelse(is.na(num_endereco), num_endereco_ctlg, num_endereco),
          cep = ifelse(is.na(cep), cep_ctlg, cep)) |> 
   select(!c(logradouro_ctlg, num_endereco_ctlg, cep_ctlg, nm_bairro_ctlg))
 ```
@@ -1069,7 +1069,7 @@ Nesse sentido, inicialmente criam-se objetos com i) os códigos das escolas sem 
 #| label: crie_var_aux_geocod
 
 # Selecione as variáveis que serão utilizadas na geocodificação 
-sel_var_geocod <- c("ano_cn_escolar", "cod_escola", "sg_uf", "cod_mun", "endereco", "numero", "cep", "bairro", "ano_censos_pres")
+sel_var_geocod <- c("ano_cn_escolar", "cod_escola", "sg_uf", "cd_mun", "endereco", "num_endereco", "cep", "nm_bairro", "ano_censos_pres")
 
 # Obtenha o código das escolas que não possuem coordenadas geográficas
 sel_esc_sem_coordgeo <- escolas_sem_coord_geo |>
@@ -1143,10 +1143,10 @@ for(ano in censo_esc_anos) {
   # Crie a base anual a ser geocodificada
   base_esc_geocod_orig <- base_unica_map_com_rep |>
     filter(cod_escola %in% sel_esc_sem_coordgeo & ano_cn_escolar == ano) |>
-    select(-c("cep", "endereco", "numero", "bairro")) |>
+    select(-c("cep", "endereco", "num_endereco", "nm_bairro")) |>
     left_join(
       escolas_sem_coord_geo |>
-        select("cod_escola", "bairro", "endereco", "numero", "cep"),
+        select("cod_escola", "nm_bairro", "endereco", "num_endereco", "cep"),
       by = "cod_escola"
     ) |>
     select(all_of(sel_var_geocod))
@@ -1154,11 +1154,11 @@ for(ano in censo_esc_anos) {
   # Defina os campos que serão utilizados para a geocodificação
   campos <- definir_campos(
     estado = "sg_uf",
-    municipio = "cod_mun",
+    municipio = "cd_mun",
     logradouro = "endereco",
-    numero = "numero",
+    numero = "num_endereco",
     cep = "cep",
-    localidade = "bairro")
+    localidade = "nm_bairro")
 
   # Transforme a classe das variáveis (exigência do algoritmo)
   base_esc_geocod <- base_esc_geocod_orig |>
@@ -1175,11 +1175,11 @@ for(ano in censo_esc_anos) {
 
   # Selecione apenas as variáveis de interesse
   escolas_geocod <- escolas_geocod |>
-    select(sg_uf, cod_mun, cod_escola, lat, lon, precisao, desvio_metros, tipo_resultado, ano_censos_pres)
+    select(sg_uf, cd_mun, cod_escola, lat, lon, precisao, desvio_metros, tipo_resultado, ano_censos_pres)
 
   # Renomeie as colunas (exceto as variáveis que permanecerão as mesmas), acrescentando o ano
   ## Crie objetos auxiliares para identificar quais variáveis serão alteradas
-  var_perm <- c("sg_uf", "cod_mun", "cod_escola")
+  var_perm <- c("sg_uf", "cd_mun", "cod_escola")
   outras_var <- setdiff(names(escolas_geocod), var_perm)
   novos_nomes_var <- str_c(outras_var, "_", ano)
  
@@ -1212,7 +1212,7 @@ A partir dos sufixos das variáveis, que indicam o ano de origem do dado para ca
 
 # Transforme a lista com os resultados da geocodificação em uma única base tabular
 escolas_geocod_tds_anos <- resultados_geocod |>
-  reduce(full_join, by = c("sg_uf", "cod_mun", "cod_escola"))
+  reduce(full_join, by = c("sg_uf", "cd_mun", "cod_escola"))
 
 # Veja os dados para as primeiras escolas da base única
 escolas_geocod_tds_anos |>
@@ -1295,7 +1295,7 @@ escolas_geocod_tds_anos |>
   knitr::kable(col.names = c("Presença nos censos (ano)", "Total de escolas", "Proporção (%)"), align = 'lcc')
 ```
 
-Como demonstra a estrutura da base, com exceção das variáveis relacionadas à unidade federativa (`sg_uf`), ao código do município (`cod_mun`) e ao código de identificação único da escola (`cod_escola`), para todas as outras existem uma versão relacionada a cada ano do censo analisado (lat_2023, lon_2023, precisao_2023, etc.).
+Como demonstra a estrutura da base, com exceção das variáveis relacionadas à unidade federativa (`sg_uf`), ao código do município (`cd_mun`) e ao código de identificação único da escola (`cod_escola`), para todas as outras existem uma versão relacionada a cada ano do censo analisado (lat_2023, lon_2023, precisao_2023, etc.).
 No caso específico das coordenadas geográficas, deve-se ter apenas um par de referência - em tese, o de maior acurácia.
 
 Nesse sentido, baseando-se no *menor valor de desvio da localização da escola* e na busca pelo *dado mais recente possível*, as próximas linhas do código selecionarão o caso (escola) com as melhores coordenadas.
@@ -1317,8 +1317,8 @@ escolas_geocod_long <- escolas_geocod_tds_anos |>
 
 # Selecione a escola com o menor desvio
 escolas_geocod_melhor_ano <- escolas_geocod_long |> 
-  group_by(cod_escola, sg_uf, cod_mun) |>
-  arrange(cod_escola, sg_uf, cod_mun, desvio_metros, desc(ano), .by_group = T) |> 
+  group_by(cod_escola, sg_uf, cd_mun) |>
+  arrange(cod_escola, sg_uf, cd_mun, desvio_metros, desc(ano), .by_group = T) |> 
   slice_head(n = 1) |>
   ungroup() |>
   rename(melhor_ano = ano,
@@ -1428,7 +1428,7 @@ colunas_excluir <- "\\d{4}$"
 escolas_geocod_compatib <- escolas_geocod_compatib |>
   select(-any_of(matches(colunas_excluir))) |>
   mutate(fonte_coord_geo = "geocodebr")  |> 
-  left_join(base_unica_map_com_rep, join_by(sg_uf, cod_mun, cod_escola, melhor_ano == ano_cn_escolar)) 
+  left_join(base_unica_map_com_rep, join_by(sg_uf, cd_mun, cod_escola, melhor_ano == ano_cn_escolar)) 
 ```
 
 O próximo passo consiste em integrar ambas as bases com coordenadas geográficas (`escolas_com_coord_geo` e `escolas_geocod_compatib`).
@@ -1454,16 +1454,15 @@ escolas_geo_tot <- escolas_geo_tot |>
     # Junte as informações das coordenadas geográficas nos mesmos campos
     lat = if_else(!is.na(lat_inep), as.numeric(lat_inep), melhor_latitude),
     lon = if_else(!is.na(long_inep), as.numeric(long_inep), melhor_longitude),
-    fonte_ano_cn_escolar = if_else(!is.na(melhor_ano), melhor_ano, ano_cn_escolar),
-    # Modifique a classe de algumas variáveis
-    across(c(fonte_ano_cn_escolar, tp_adm, sg_uf, cod_mun, fonte_coord_geo), as.factor)) |>
+    fonte_ano_cn_escolar = if_else(!is.na(melhor_ano), melhor_ano, ano_cn_escolar)
+  ) |>
   select(!c(lat_inep, long_inep, melhor_ano, melhor_latitude, melhor_longitude, ano_cn_escolar)) |>
   # drop_na(c(lat, lon)) |>
   rename(
     precisao = melhor_precisao, 
-    desvio = melhor_desvio
+    desvio_metros = melhor_desvio
     ) |> 
-  relocate(cod_escola, nm_escola, lat, lon, precisao, desvio, fonte_coord_geo, fonte_ano_cn_escolar, tp_adm, qt_mat_bas, sg_uf, cod_mun, cep, endereco, numero, bairro) |> 
+  relocate(cod_escola, nm_escola, lat, lon, precisao, desvio_metros, fonte_coord_geo, fonte_ano_cn_escolar, tp_dependencia, qt_mat_bas, sg_uf, cd_mun, cep, endereco, num_endereco, nm_bairro) |> 
   arrange(cod_escola)
 
 escolas_geo_tot |>
